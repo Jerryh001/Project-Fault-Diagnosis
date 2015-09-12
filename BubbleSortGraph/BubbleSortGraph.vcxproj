@@ -24,7 +24,7 @@
     </ClCompile>
     <ClCompile Include="broken.cpp" />
     <ClCompile Include="f_component.cpp" />
-    <ClCompile Include="Untitled1.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BGraph.h">
