@@ -10,7 +10,7 @@ int main()
 	//ofstream cout("output.txt");
 	int Level = 4;//階層數
 	int BrokenNum = 8;//壞點數
-	BGraph Bubble(Level);
+	BGraph Bubble(Level);//圖
 	list<string> pro;//壞點ID
 	prowhypoint(Level, BrokenNum, pro);
 	Bubble.SetBroken(pro);
