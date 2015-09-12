@@ -5,30 +5,26 @@
 #include <sstream>
 #include<ctime>
 #include<vector>
-//#include<cmath>
 #include "BGraph.h"
 using namespace std;
 void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞點數量
 {
-	int i = 0, v = 0, boo = 0;
+	bool boo = 0;
 	srand(time(NULL));
-	vector<int> forsav;
 	cout << "bad point:";
 	while (c)
 	{
 		vector<int> a;
 		int b = 0;
-		stringstream ss;
-		string convert_str;
 		for (int i = 0; i < n; i++)
 		{
 			a.push_back(rand() % (i + 1) + 1);
 			b *= 10;
 			b += a[i];
 		}
-		for (int i = 0; i < v; i++)
+		for (list<string>::iterator i = p.begin(); i!=p.end(); i++)
 		{
-			if (b == forsav[i])
+			if (to_string(b) == *i)
 			{
 				boo = 1;
 				c++;
@@ -37,12 +33,8 @@ void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞�
 		}
 		if (boo == 0)
 		{
-			forsav.push_back(b);
-			ss << b;
-			ss >> convert_str;
-			p.push_back(convert_str);
+			p.push_back(to_string(b));
 			cout << BPoint(p.back()).ID << " ";
-			v++;
 		}
 		boo = 0;
 		//strsav[i]=convert_str;
