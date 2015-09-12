@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Untitled1.cpp">
-      <Filter>原始程式檔</Filter>
-    </ClCompile>
     <ClCompile Include="broken.cpp">
       <Filter>原始程式檔</Filter>
     </ClCompile>
@@ -25,6 +22,9 @@
       <Filter>原始程式檔</Filter>
     </ClCompile>
     <ClCompile Include="f_component.cpp">
+      <Filter>原始程式檔</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>原始程式檔</Filter>
     </ClCompile>
   </ItemGroup>
