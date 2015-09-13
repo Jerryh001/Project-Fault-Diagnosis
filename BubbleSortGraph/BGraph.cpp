@@ -135,7 +135,12 @@ void BGraph::Symptom_Get()//取得完整症狀
 			for (vector<Stauts>::iterator b = a + 1; b != i->Neighbor.end(); b++)
 			{
 				i->ComparedResult.push_back({ a->ID, b->ID, false });
-				if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken || i->IsBroken && (rand() % 10)>5)
+				int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
+				if (i->IsBroken && (rand() % 10) > mode)
+				{
+					i->ComparedResult.rbegin()->value = true;
+				}
+				else if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
 				{
 					i->ComparedResult.rbegin()->value = true;
 				}
