@@ -16,6 +16,10 @@ struct Stauts//白箭頭與黑箭頭 黑=true
 {
 	string ID;
 	bool Guess;
+	bool operator==(Stauts two)
+	{
+		return (ID == two.ID&&Guess == two.Guess);
+	}
 };
 class BPoint//可能可以改用map做
 {
@@ -54,7 +58,7 @@ public:
 	void SetBroken(list<string>&);
 	void Symptom_Get();
 	void f_comp();
-
+	void CheckPointComp(const BPoint&);
 	int Level;
 	list<BPoint> Point;
 	BStruct BS;
