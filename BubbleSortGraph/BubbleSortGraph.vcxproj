@@ -24,12 +24,12 @@
     </ClCompile>
     <ClCompile Include="broken.cpp" />
     <ClCompile Include="f_component.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <DeploymentContent>true</DeploymentContent>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BGraph.h">
-      <FileType>CppHeader</FileType>
-    </ClInclude>
+    <ClInclude Include="BGraph.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A941AD6E-F106-418D-B34E-EADF79A69A80}</ProjectGuid>
