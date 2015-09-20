@@ -4,6 +4,7 @@ void BGraph::f_comp() {
 	{
 		if (i->Component_ID == NULL)
 		{
+			list<BPoint*> todolist = { &*i };
 			Component.push_back({ &*i });
 			i->Component_ID = &Component.back();
 			CheckPointComp(*i);
@@ -12,6 +13,41 @@ void BGraph::f_comp() {
 		{
 			i->Component_ID = NULL;
 			Component.pop_back();
+			while (todolist.size() > 0)
+			{
+				BPoint& head = *todolist.front();
+				todolist.pop_front();
+				for (vector<Stauts>::const_iterator i = head.Neighbor.begin(); i != head.Neighbor.end(); i++)//檢查過去
+				{
+					if (i->Guess == false)//好點
+					{
+						BPoint& JPoint = GetPoint(i->ID);
+						if (JPoint.Component_ID != NULL) continue;
+						vector<Stauts>::const_iterator& J = find(JPoint.Neighbor.begin(), JPoint.Neighbor.end(), Stauts{ head.ID,false });//檢查回來
+						if (J != JPoint.Neighbor.end())
+						{
+							JPoint.Component_ID = head.Component_ID;
+							JPoint.Component_ID->push_back(&JPoint);
+							todolist.push_back(&JPoint);
+							//CheckPointComp(JPoint);//會stackoverflow
+						}
+					}
+				}
+			}
+			i->IsIsolated = true;
+			for (vector<Stauts>::const_iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
+			{
+				if (j->Guess == false)
+				{
+					i->IsIsolated = false;
+					break;
+				}
+			}
+			if (Component.back().size() == 1 && i->IsIsolated)//清掉孤立元件 不確定是不是這樣做
+			{
+				i->Component_ID = NULL;
+				Component.pop_back();
+			}
 		}
 		//先放著以防萬一
 		/*for (vector<Stauts>::iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
@@ -57,8 +93,8 @@ void BGraph::f_comp() {
 		}*/
 	}
 }
-
-void BGraph::CheckPointComp(const BPoint& B)//DFS遞迴
+/*
+void BGraph::CheckPointComp(const BPoint& B,list<BPoint>& todolist)//BFS(吧)
 {
 	//if (B.Component_ID != NULL) return;
 	for (vector<Stauts>::const_iterator i = B.Neighbor.begin(); i != B.Neighbor.end(); i++)//檢查過去
@@ -72,8 +108,8 @@ void BGraph::CheckPointComp(const BPoint& B)//DFS遞迴
 			{
 				JPoint.Component_ID = B.Component_ID;
 				JPoint.Component_ID->push_back(&JPoint);
-				CheckPointComp(JPoint);
+				CheckPointComp(JPoint);//會stackoverflow
 			}
 		}
 	}
-}
+}*/

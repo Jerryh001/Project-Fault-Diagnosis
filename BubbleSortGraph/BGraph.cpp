@@ -57,7 +57,7 @@ string GetCreatedID(string ID)//一般ID轉創造用ID
 	}
 	while (poto.length() > 0)
 	{
-		int current = poto.find(*(ID.rbegin()));
+		int current = poto.find(ID.back());
 		C_ID = char(current + '1') + C_ID;
 		poto.erase(poto.begin() + current);
 		ID.pop_back();
@@ -135,14 +135,14 @@ void BGraph::Symptom_Get()//取得完整症狀
 			for (vector<Stauts>::iterator b = a + 1; b != i->Neighbor.end(); b++)
 			{
 				i->ComparedResult.push_back({ a->ID, b->ID, false });
-				int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
+				int mode = 5;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
 				if (i->IsBroken && (rand() % 10) > mode)
 				{
-					i->ComparedResult.rbegin()->value = true;
+					i->ComparedResult.back().value = true;
 				}
 				else if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
 				{
-					i->ComparedResult.rbegin()->value = true;
+					i->ComparedResult.back().value = true;
 				}
 				else
 				{
