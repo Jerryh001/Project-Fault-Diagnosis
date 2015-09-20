@@ -31,6 +31,9 @@
   <ItemGroup>
     <ClInclude Include="BGraph.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="output.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A941AD6E-F106-418D-B34E-EADF79A69A80}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

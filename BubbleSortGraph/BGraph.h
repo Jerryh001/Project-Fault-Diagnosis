@@ -58,7 +58,7 @@ public:
 	void SetBroken(list<string>&);
 	void Symptom_Get();
 	void f_comp();
-	void CheckPointComp(const BPoint&);
+	//void CheckPointComp(const BPoint&,list<BPoint>&);
 	int Level;
 	list<BPoint> Point;
 	BStruct BS;
