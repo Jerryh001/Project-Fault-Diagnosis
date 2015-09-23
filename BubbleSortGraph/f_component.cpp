@@ -1,5 +1,7 @@
 ﻿#include "BGraph.h"
-void BGraph::f_comp() {
+void BGraph::f_comp()
+{
+	Component.push_back({});//預留給孤立點的"元件"
 	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
 	{
 		if (i->Component_ID == NULL)
@@ -45,7 +47,8 @@ void BGraph::f_comp() {
 			}
 			if (Component.back().size() == 1 && i->IsIsolated)//清掉孤立元件 不確定是不是這樣做
 			{
-				i->Component_ID = NULL;
+				i->Component_ID = &Component.front();
+				i->Component_ID->push_back(&*i);
 				Component.pop_back();
 			}
 		}

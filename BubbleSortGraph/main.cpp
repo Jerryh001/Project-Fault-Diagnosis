@@ -5,9 +5,33 @@
 #include<list>
 using namespace std;
 #include "BGraph.h"
-int main()
+void output(const BGraph& Bubble)//顯示結果
 {
 	ofstream cout("output.txt");
+	cout << "Isolated Point(s):" << endl;
+	if (Bubble.Component.front().size() == 0)
+	{
+		cout << "Nope" << endl;
+	}
+	for (list<BPoint* > ::const_iterator j = Bubble.Component.front().begin(); j != Bubble.Component.front().end(); j++)
+	{
+		cout << "Point " + (*j)->ID << endl;
+	}
+	int com_ID = 1;//temp
+	for (list<list<BPoint*>>::const_iterator i = ++Bubble.Component.begin(); i != Bubble.Component.end(); i++, com_ID++)//顯示猜測結果
+	{
+		cout << "Component " << com_ID << " Contain the following Point(s):" << endl;
+		for (list<BPoint* > ::const_iterator j = i->begin(); j != i->end(); j++)
+		{
+			cout << "Point " + (*j)->ID << endl;
+		}
+	}
+	cout.close();
+	system("start output.txt");
+}
+int main()
+{
+
 	int Level = 6;//階層數
 	int BrokenNum = 10;//壞點數
 	BGraph Bubble(Level);//圖
@@ -24,17 +48,7 @@ int main()
 		}
 	}*/
 	Bubble.f_comp();
-	int com_ID = 0;//temp
-	for (list<list<BPoint*>>::iterator i = Bubble.Component.begin(); i != Bubble.Component.end(); i++,com_ID++)//顯示猜測結果
-	{
-		cout << "Component " << com_ID << " Contain the following Point(s):" << endl;
-		for (list<BPoint* > ::iterator j = i->begin(); j != i->end(); j++)
-		{
-			cout << "Point " + (*j)->ID << endl;
-		}
-	}
-	cout.close();
-	system("start output.txt");
+	output(Bubble);
 	system("PAUSE");
 	return 0;
 }
