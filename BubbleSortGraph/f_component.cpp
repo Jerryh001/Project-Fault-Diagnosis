@@ -53,48 +53,51 @@ void BGraph::f_comp()
 				Component.pop_back();
 			}
 		}
-		//先放著以防萬一
-		/*for (vector<Stauts>::iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
-		{
-			if (j->Guess == false)
+		/*for (list<BPoint>::iterator i = Isolated_Neighbor.begin(); i != Isolated_Neighbor.end();i++) {
+		//找孤立點附近的component
+		}*/
+			//先放著以防萬一
+			/*for (vector<Stauts>::iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
 			{
-				BPoint &pointJ = GetPoint(j->ID);
-				for (vector<Stauts>::iterator k = pointJ.Neighbor.begin(); k != pointJ.Neighbor.end(); k++)
+				if (j->Guess == false)
 				{
-					if (k->ID == i->ID)//改用find做
+					BPoint &pointJ = GetPoint(j->ID);
+					for (vector<Stauts>::iterator k = pointJ.Neighbor.begin(); k != pointJ.Neighbor.end(); k++)
 					{
-						if (k->Guess == false)//這裡感覺怪怪的
+						if (k->ID == i->ID)//改用find做
 						{
-							if (i->Component_ID == NULL && pointJ.Component_ID == NULL)
+							if (k->Guess == false)//這裡感覺怪怪的
 							{
-								Component.push_back({ &*i ,&pointJ });
-								i->Component_ID = pointJ.Component_ID = &Component.back();
-							}
-							else if (i->Component_ID == NULL)
-							{
-								i->Component_ID=pointJ.Component_ID;
-								pointJ.Component_ID->push_back(&*i);
-							}
-							else if (pointJ.Component_ID == NULL)
-							{
-								 pointJ.Component_ID= i->Component_ID;
-								 i->Component_ID->push_back(&pointJ);
-							}
-							else if (i->Component_ID != pointJ.Component_ID)//連起來
-							{
-								list<BPoint*>* temp = pointJ.Component_ID;//可能沒問題了
-								for (list<BPoint*>::iterator l = temp->begin(); l != temp->end(); l++)
+								if (i->Component_ID == NULL && pointJ.Component_ID == NULL)
 								{
-									(*l)->Component_ID = i->Component_ID;
+									Component.push_back({ &*i ,&pointJ });
+									i->Component_ID = pointJ.Component_ID = &Component.back();
 								}
-								i->Component_ID->splice(i->Component_ID->end(),*temp);
+								else if (i->Component_ID == NULL)
+								{
+									i->Component_ID=pointJ.Component_ID;
+									pointJ.Component_ID->push_back(&*i);
+								}
+								else if (pointJ.Component_ID == NULL)
+								{
+									 pointJ.Component_ID= i->Component_ID;
+									 i->Component_ID->push_back(&pointJ);
+								}
+								else if (i->Component_ID != pointJ.Component_ID)//連起來
+								{
+									list<BPoint*>* temp = pointJ.Component_ID;//可能沒問題了
+									for (list<BPoint*>::iterator l = temp->begin(); l != temp->end(); l++)
+									{
+										(*l)->Component_ID = i->Component_ID;
+									}
+									i->Component_ID->splice(i->Component_ID->end(),*temp);
+								}
 							}
+							break;
 						}
-						break;
 					}
 				}
-			}
-		}*/
+			}*/
 	}
 }
 void BGraph::FindGoodComp()
