@@ -2,6 +2,7 @@
 void BGraph::f_comp()
 {
 	Component.push_back({});//預留給孤立點的"元件"
+	Isolated_Neighbor.push_back({});//對齊
 	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
 	{
 		if (i->Component_ID == NULL)
@@ -94,6 +95,23 @@ void BGraph::f_comp()
 				}
 			}
 		}*/
+	}
+}
+void BGraph::FindGoodComp()
+{
+	for (list<list<BPoint*>>::iterator i = ++Component.begin(); i != Component.end(); i++)//每個元件
+	{
+		for (list<BPoint*>::iterator j = Component.front().begin(); j != Component.front().end(); j++)//每個孤立點
+		{
+			BPoint &B = **j;
+			for (vector<Stauts>::iterator k = (*j)->Neighbor.begin(); k != (*j)->Neighbor.end(); k++)
+			{
+				if (GetPoint(k->ID).Component_ID == &*i)
+				{
+					//加入
+				}
+			}
+		}
 	}
 }
 /*

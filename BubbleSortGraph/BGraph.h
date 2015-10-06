@@ -53,16 +53,20 @@ class BGraph
 {
 public:
 	BGraph(int);
-	void CreateGraph();
-	BPoint& GetPoint(string);
-	void SetBroken(list<string>&);
-	void Symptom_Get();
-	void f_comp();
+	void CreateGraph();//初始化
+	BPoint& GetPoint(string);//用ID取得點物件
+	void SetBroken(list<string>&);//設定壞點
+	void Symptom_Get();//取得完整症狀
+	void f_comp();//連接元件
+	void FindGoodComp();
 	//void CheckPointComp(const BPoint&,list<BPoint>&);
-	int Level;
-	list<BPoint> Point;
-	BStruct BS;
-	list<list<BPoint*>> Component;
+	int Level;//階層
+	int t;
+	int k;
+	list<BPoint> Point;//點
+	BStruct BS;//階層狀結構
+	list<list<BPoint*>> Component;//元件
+	//list<list<BPoint*>> Isolated_Neighbor;//紀錄每個元件周圍的孤立點
 };
 void prowhypoint(int, int, list<string> &);
 void Create(int, string, list<BPoint> &, BStruct &);
