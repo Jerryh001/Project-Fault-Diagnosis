@@ -100,6 +100,8 @@ void BStruct::Create(int l)//產生結構(空)
 BGraph::BGraph(int L)
 {
 	Level = L;
+	k = Level - 1;
+	t = round(pow(2, Level - 2))*(Level - 3) / (Level - 1);
 	BS.Create(Level);
 	CreateGraph();
 }
