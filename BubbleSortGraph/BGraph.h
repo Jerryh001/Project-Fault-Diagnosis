@@ -66,7 +66,7 @@ public:
 	list<BPoint> Point;//點
 	BStruct BS;//階層狀結構
 	list<list<BPoint*>> Component;//元件
-	//list<list<BPoint*>> Isolated_Neighbor;//紀錄每個元件周圍的孤立點
+	list<list<BPoint*>> Isolated_Neighbor;//紀錄每個元件周圍的孤立點
 };
 void prowhypoint(int, int, list<string> &);
 void Create(int, string, list<BPoint> &, BStruct &);
