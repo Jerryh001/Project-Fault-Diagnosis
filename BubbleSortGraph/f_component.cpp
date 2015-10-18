@@ -1,21 +1,16 @@
 ﻿#include "BGraph.h"
 void BGraph::f_comp()
 {
-	Component.push_back({});//預留給孤立點的"元件"
-	Isolated_Neighbor.push_back({});//對齊
+	Component.push_back(NULL);//預留給孤立點的"元件"
+	Component.front().member.clear();
 	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
 	{
 		if (i->Component_ID == NULL)
 		{
 			list<BPoint*> todolist = { &*i };
-			Component.push_back({ &*i });
+			Component.push_back( &*i );
 			i->Component_ID = &Component.back();
-			CheckPointComp(*i);
-		}
-		if (Component.back().size() == 1)//清掉孤立元件 不確定是不是這樣做
-		{
-			i->Component_ID = NULL;
-			Component.pop_back();
+			Component.back().id=(++Component.rbegin())->id+1;
 			while (todolist.size() > 0)
 			{
 				BPoint& head = *todolist.front();
@@ -30,7 +25,7 @@ void BGraph::f_comp()
 						if (J != JPoint.Neighbor.end())
 						{
 							JPoint.Component_ID = head.Component_ID;
-							JPoint.Component_ID->push_back(&JPoint);
+							JPoint.Component_ID->member.push_back(&JPoint);
 							todolist.push_back(&JPoint);
 							//CheckPointComp(JPoint);//會stackoverflow
 						}
@@ -46,10 +41,10 @@ void BGraph::f_comp()
 					break;
 				}
 			}
-			if (Component.back().size() == 1 && i->IsIsolated)//清掉孤立元件 不確定是不是這樣做
+			if (Component.back().member.size() == 1 && i->IsIsolated)//清掉孤立元件 應該是這樣做
 			{
 				i->Component_ID = &Component.front();
-				i->Component_ID->push_back(&*i);
+				i->Component_ID->member.push_back(&*i);
 				Component.pop_back();
 			}
 		}
@@ -102,19 +97,22 @@ void BGraph::f_comp()
 }
 void BGraph::FindGoodComp()
 {
-	for (list<list<BPoint*>>::iterator i = ++Component.begin(); i != Component.end(); i++)//每個元件
+	for (list<BComponent>::iterator i = ++Component.begin(); i != Component.end(); i++)//每個元件
 	{
-		for (list<BPoint*>::iterator j = Component.front().begin(); j != Component.front().end(); j++)//每個孤立點
+		for (list<BPoint*>::iterator j = Component.front().member.begin(); j != Component.front().member.end(); j++)//每個孤立點
 		{
-			BPoint &B = **j;
-			for (vector<Stauts>::iterator k = (*j)->Neighbor.begin(); k != (*j)->Neighbor.end(); k++)
+			BPoint &B = *(*j);//孤立點本身
+			for (vector<Stauts>::iterator k =B.Neighbor.begin(); k != B.Neighbor.end(); k++)
 			{
 				if (GetPoint(k->ID).Component_ID == &*i)
 				{
+					i->Sur_Point.push_back(&B);
+					break;
 					//加入
 				}
 			}
 		}
+		
 	}
 }
 /*
