@@ -1,14 +1,12 @@
 ﻿#include "BGraph.h"
 BPoint::BPoint()
 {
-	Component_ID = 0;
 	IsBroken = false;
 	Level = 0;
 	IsIsolated = false;
 }
 BPoint::BPoint(const string &ID_C)
 {
-	Component_ID = 0;
 	IsBroken = false;
 	Level = 0;
 	IsIsolated = false;
@@ -100,7 +98,7 @@ void BStruct::Create(int l)//產生結構(空)
 BGraph::BGraph(int L)
 {
 	Level = L;
-	k = Level - 1;
+	k = Level - 1;//單次最少找出K個點
 	t = round(pow(2, Level - 2))*(Level - 3) / (Level - 1);
 	BS.Create(Level);
 	CreateGraph();
@@ -137,7 +135,7 @@ void BGraph::Symptom_Get()//取得完整症狀
 			for (vector<Stauts>::iterator b = a + 1; b != i->Neighbor.end(); b++)
 			{
 				i->ComparedResult.push_back({ a->ID, b->ID, false });
-				int mode = 5;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
+				int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
 				if (i->IsBroken && (rand() % 10) > mode)
 				{
 					i->ComparedResult.back().value = true;
@@ -155,4 +153,27 @@ void BGraph::Symptom_Get()//取得完整症狀
 			}
 		}
 	}
+}
+
+BComponent::BComponent(BPoint *B)
+{
+	member.push_back(B);
+	id = 0;
+}
+
+bool BComponent::Is_Link()const
+{
+	for (list<BPoint*>::const_iterator i = Sur_Point.begin(); i != Sur_Point.end(); i++)
+	{
+		for (list<BPoint*>::const_iterator j = Sur_Point.begin(); j != Sur_Point.end(); j++)
+		{
+			if (i == j)continue;
+			for (vector<Stauts>::iterator k = (*i)->Neighbor.begin(); k != (*i)->Neighbor.end(); k++)
+			{
+				if (k->ID == (*j)->ID)//maybe?
+					return true;
+			}
+		}
+	}
+	return false;
 }
