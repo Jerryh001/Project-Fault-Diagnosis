@@ -6,7 +6,9 @@ using namespace std;
 #ifndef BGRAPH_H
 #define BGRAPH_H
 ////////////////////
+class BGraph;
 class BPoint;
+class BStruct;
 class BComponent;
 ////////
 
@@ -69,11 +71,11 @@ public:
 	BGraph(int);
 	void CreateGraph();//初始化
 	BPoint& GetPoint(string);//用ID取得點物件
-	void SetBroken(list<string>&);//設定壞點
-	void Symptom_Get();//取得完整症狀
+	void SetBroken(list<string>&);
+	void Point_Symptom_Get(BPoint&);//取得單一點症狀
+	//設定壞點
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件
-	//void CheckPointComp(const BPoint&,list<BPoint>&);
 	int Level;//階層
 	int t;
 	int k;

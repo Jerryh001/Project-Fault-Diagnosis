@@ -17,7 +17,6 @@ void output(const BGraph& Bubble)//顯示結果
 	{
 		cout << "Point " + (*j)->ID << endl;
 	}
-	//int com_ID = 1;//temp
 	for (list<BComponent>::const_iterator i = ++Bubble.Component.begin(); i != Bubble.Component.end(); i++)//顯示猜測結果
 	{
 		cout << "Component " << i->id << " Contain the following Point(s):" << endl;
@@ -44,22 +43,12 @@ void output(const BGraph& Bubble)//顯示結果
 }
 int main()
 {
-
-	int Level = 5;//階層數
-	int BrokenNum = 40;//壞點數
+	int Level = 7;//階層數
+	int BrokenNum = 20;//壞點數
 	BGraph Bubble(Level);//圖
 	list<string> pro;//壞點ID
-	//pro.push_back("1111");
 	prowhypoint(Level, BrokenNum, pro);
 	Bubble.SetBroken(pro);
-	Bubble.Symptom_Get();
-	/*for (list<BPoint>::iterator i = Bubble.Point.begin(); i != Bubble.Point.end(); i++)//顯示猜測結果
-	{
-		for (vector<Stauts>::iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
-		{
-			//cout << "Point " + i->ID + " consider that point " + j->ID + " is " + (j->Guess ? "Absolutely BAD" : "Maybe GOOD") << endl;
-		}
-	}*/
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);

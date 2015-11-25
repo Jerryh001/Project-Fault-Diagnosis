@@ -11,19 +11,17 @@ BPoint::BPoint(const string &ID_C)
 	Level = 0;
 	IsIsolated = false;
 	ID_Created = ID_C;
-	Level =ID_C.length();
+	Level = ID_C.length();
 	ConvertToID();
 	Create_Neighbor();
 }
 void BPoint::Create_Neighbor()//記錄相鄰點
 {
-	//cout<<"Point"<<ID<<endl;
 	Neighbor.clear();
 	for (int i = 0; i < Level - 1; i++)
 	{
 		swap(ID[i], ID[i + 1]);
 		Neighbor.push_back({ ID,true });
-		//cout<<ID_Temp<<"is Neighbor"<<endl;
 		swap(ID[i], ID[i + 1]);
 	}
 }
@@ -68,7 +66,6 @@ BPoint& BGraph::GetPoint(string ID)//用ID找點的物件
 	BStruct *p = &BS;
 	for (string::reverse_iterator i = ID.rbegin(); i != ID.rend(); i++)
 	{
-		//cout << *i;
 		p = &p->next.at(*i - '1');
 	}
 	return *p->point;
@@ -126,31 +123,32 @@ void BGraph::SetBroken(list<string> &P)//將壞點放入
 		GetPoint(BPoint(*i).ID).IsBroken = true;
 	}
 }
-void BGraph::Symptom_Get()//取得完整症狀
+void BGraph::Point_Symptom_Get(BPoint& p)//取得完整症狀
 {
-	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
+	int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
+	BPoint* GoodStandard = NULL;
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); (GoodStandard == NULL) && a != p.Neighbor.end() - 1; a++)
 	{
-		for (vector<Stauts>::iterator a = i->Neighbor.begin(); a != i->Neighbor.end() - 1; a++)
+		for (vector<Stauts>::iterator b = a + 1; b != p.Neighbor.end(); b++)
 		{
-			for (vector<Stauts>::iterator b = a + 1; b != i->Neighbor.end(); b++)
+			if (p.IsBroken && (rand() % 10) < mode||(!p.IsBroken)&& !(GetPoint(a->ID).IsBroken && GetPoint(b->ID).IsBroken))
 			{
-				i->ComparedResult.push_back({ a->ID, b->ID, false });
-				int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
-				if (i->IsBroken && (rand() % 10) > mode)
-				{
-					i->ComparedResult.back().value = true;
-				}
-				else if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
-				{
-					i->ComparedResult.back().value = true;
-				}
-				else
-				{
-					a->Guess = false;
-					b->Guess = false;
-				}
-				//cout << "symptom " << i->ComparedResult.rbegin()->a << " and " << i->ComparedResult.rbegin()->b << " compared by " << i->ID << " is " << i->ComparedResult.rbegin()->value << endl;
+				GoodStandard = &GetPoint(a->ID);
+				a->Guess = false;
+				b->Guess = false;
+				break;
 			}
+		}
+	}
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); a != p.Neighbor.end() - 1; a++)
+	{
+		if (&GetPoint(a->ID) == GoodStandard)
+		{
+			continue;
+		}
+		else if (p.IsBroken && (rand() % 10) < mode || (!p.IsBroken) && !(GetPoint(a->ID).IsBroken && GoodStandard->IsBroken))
+		{
+			a->Guess = false;
 		}
 	}
 }
