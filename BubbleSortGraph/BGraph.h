@@ -67,6 +67,13 @@ public:
 
 class BGraph
 {
+private:
+	int Level;//階層
+	int t;
+	int k;
+	list<BPoint> Point;//點
+	BStruct BS;//階層狀結構
+	list<BComponent> Component;//元件
 public:
 	BGraph(int);
 	void CreateGraph();//初始化
@@ -76,12 +83,7 @@ public:
 	//設定壞點
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件
-	int Level;//階層
-	int t;
-	int k;
-	list<BPoint> Point;//點
-	BStruct BS;//階層狀結構
-	list<BComponent> Component;//元件
+	friend void output(const BGraph&);
 };
 
 void prowhypoint(int, int, list<string> &);
