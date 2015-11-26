@@ -37,21 +37,8 @@ void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞�
 			cout << BPoint(p.back()).ID << " ";
 		}
 		boo = 0;
-		//strsav[i]=convert_str;
 		c--;
 	}
 	cout << endl;
 }
-//int main()
-//{
-//    int n,c;
-//    vector<string> p;
-//    cout<<"請輸入階層數(請輸入整數):";
-//    cin>>n;
-//    cout<<"請輸入錯誤點數量(請輸入整數):";
-//    cin>>c;
-//    cout<<"標出錯誤點:";
-//    prowhypoint(n,c,p);
-//    cout<<endl;
-//}
 

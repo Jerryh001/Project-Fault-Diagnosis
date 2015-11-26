@@ -11,7 +11,7 @@ BPoint::BPoint(const string &ID_C)
 	Level = 0;
 	IsIsolated = false;
 	ID_Created = ID_C;
-	Level = ID_C.length();
+	Level = static_cast<int>(ID_C.length());
 	ConvertToID();
 	Create_Neighbor();
 }
@@ -46,14 +46,14 @@ string GetCreatedID(string ID)//一般ID轉創造用ID
 {
 	string C_ID;
 	string poto;
-	int Level = ID.length();
+	int Level = static_cast<int>(ID.length());
 	for (int i = Level; i > 0; i--)
 	{
 		poto += char(i + '0');
 	}
 	while (poto.length() > 0)
 	{
-		int current = poto.find(ID.back());
+		int current = static_cast<int>(poto.find(ID.back()));
 		C_ID = char(current + '1') + C_ID;
 		poto.erase(poto.begin() + current);
 		ID.pop_back();
@@ -96,7 +96,7 @@ BGraph::BGraph(int L)
 {
 	Level = L;
 	k = Level - 1;//單次最少找出K個點
-	t = round(pow(2, Level - 2))*(Level - 3) / (Level - 1);
+	t = static_cast<int>(round(pow(2, Level - 2))*(Level - 3) / (Level - 1));
 	BS.Create(Level);
 	CreateGraph();
 }
@@ -113,7 +113,6 @@ void Create(int n, string tail, list<BPoint> &BP, BStruct &BS)//遞迴產生點�
 	if (n == 0) {
 		BP.push_back(tail);
 		BS.Set_Point(BP.back());
-		//cout << tail << " " << BP.rbegin()->ID << " " << GetCreatedID(BP.rbegin()->ID) << endl;
 	}
 }
 void BGraph::SetBroken(list<string> &P)//將壞點放入
@@ -131,12 +130,27 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得完整症狀
 	{
 		for (vector<Stauts>::iterator b = a + 1; b != p.Neighbor.end(); b++)
 		{
-			if (p.IsBroken && (rand() % 10) < mode||(!p.IsBroken)&& !(GetPoint(a->ID).IsBroken && GetPoint(b->ID).IsBroken))
+			if (p.IsBroken)
 			{
-				GoodStandard = &GetPoint(a->ID);
-				a->Guess = false;
-				b->Guess = false;
-				break;
+				if (rand() % 10 < mode)
+				{
+					a->Guess = false;
+					GoodStandard = &GetPoint(a->ID);
+					break;
+				}
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
+				{
+					continue;
+				}
+				else
+				{
+					a->Guess = false;
+					GoodStandard = &GetPoint(a->ID);
+					break;
+				}
 			}
 		}
 	}
@@ -146,9 +160,26 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得完整症狀
 		{
 			continue;
 		}
-		else if (p.IsBroken && (rand() % 10) < mode || (!p.IsBroken) && !(GetPoint(a->ID).IsBroken && GoodStandard->IsBroken))
+		else
 		{
-			a->Guess = false;
+			if (p.IsBroken)
+			{
+				if (rand() % 10 < mode)
+				{
+					a->Guess = false;
+				}
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || GoodStandard->IsBroken)
+				{
+					continue;
+				}
+				else
+				{
+					a->Guess = false;
+				}
+			}
 		}
 	}
 }
