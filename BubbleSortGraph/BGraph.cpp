@@ -95,6 +95,9 @@ void BStruct::Create(int l)//產生結構(空)
 		next.push_back(level - 1);
 	}
 }
+BGraph::BGraph()
+{
+}
 BGraph::BGraph(int L)
 {
 	Level = L;
@@ -176,4 +179,37 @@ bool BComponent::Is_Link()const
 		}
 	}
 	return false;
+}
+/*做local*/
+int Unitlevel = 4;
+void GetSubStruct(const BStruct& Bubble,vector<BStruct>& b)
+{
+	if (Bubble.level > Unitlevel)
+	{
+		for (int i = 0; i < Bubble.next.size(); i++)
+		{
+			GetSubStruct(Bubble.next[i], b);
+		}
+	}
+	else if (Bubble.level==Unitlevel)
+	{
+		b.push_back(Bubble);
+	}
+}
+
+Subgraph::Subgraph(BStruct &S)
+{
+	BS = S;
+	CopyGraphPoint(S.level, Point, BS);
+}
+
+void Subgraph::CopyGraphPoint(int n, list<BPoint> &BP, BStruct &BS)//因為Subgraph無法直接繼承BGraph的點 所以再建一個list<BPoint> 把點複製過來
+{
+	for (int i = 1; i <= n; i++)
+	{
+		CopyGraphPoint(n - 1, BP, BS.next.at(i - 1));
+	}
+	if (n == 0) {
+		BP.push_back(*BS.point);
+	}
 }

@@ -42,12 +42,18 @@ void output(const BGraph& Bubble)//顯示結果
 	cout.close();
 	system("start output.txt");
 }
+vector<BStruct> Sub_B;
 int main()
 {
-
-	int Level = 5;//階層數
+	
+	int Level = 6;//階層數
 	int BrokenNum = 40;//壞點數
 	BGraph Bubble(Level);//圖
+	GetSubStruct(Bubble.BS, Sub_B);
+	Subgraph Sub_G(Sub_B[0]);
+
+
+	system("PAUSE");
 	list<string> pro;//壞點ID
 	//pro.push_back("1111");
 	prowhypoint(Level, BrokenNum, pro);
