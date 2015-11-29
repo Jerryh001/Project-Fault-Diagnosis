@@ -8,6 +8,7 @@ using namespace std;
 ////////////////////
 class BPoint;
 class BComponent;
+class Subgraph;
 ////////
 
 struct Symptom//點a和b的症狀 壞=true
@@ -66,6 +67,7 @@ public:
 class BGraph
 {
 public:
+	BGraph();
 	BGraph(int);
 	void CreateGraph();//初始化
 	BPoint& GetPoint(string);//用ID取得點物件
@@ -81,7 +83,13 @@ public:
 	BStruct BS;//階層狀結構
 	list<BComponent> Component;//元件
 };
-
+class Subgraph:public BGraph
+{
+public:
+	Subgraph(BStruct &);
+	void CopyGraphPoint(int , list<BPoint> &, BStruct &);//複製原圖點到子圖
+};
+void GetSubStruct(const BStruct& Bubble, vector<BStruct>& b);//複製原圖結構到子圖(複製結構)
 void prowhypoint(int, int, list<string> &);
 void Create(int, string, list<BPoint> &, BStruct &);
 #endif // BGRAPH_H
