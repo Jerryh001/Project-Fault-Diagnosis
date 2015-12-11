@@ -59,13 +59,7 @@ int main()
 	prowhypoint(Level, BrokenNum, pro);
 	Bubble.SetBroken(pro);
 	Bubble.Symptom_Get();
-	/*for (list<BPoint>::iterator i = Bubble.Point.begin(); i != Bubble.Point.end(); i++)//顯示猜測結果
-	{
-		for (vector<Stauts>::iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
-		{
-			//cout << "Point " + i->ID + " consider that point " + j->ID + " is " + (j->Guess ? "Absolutely BAD" : "Maybe GOOD") << endl;
-		}
-	}*/
+
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);
