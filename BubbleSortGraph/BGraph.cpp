@@ -211,5 +211,16 @@ void Subgraph::CopyGraphPoint(int n, list<BPoint> &BP, BStruct &BS)//因為Subgr
 	}
 	if (n == 0) {
 		BP.push_back(*BS.point);
+		string club_ID = string(BP.back().ID, Unitlevel);
+		for (vector<Stauts>::iterator i = BP.back().Neighbor.begin(); i!=BP.back().Neighbor.end();)
+		{
+			string My_club=string(i->ID, Unitlevel);
+			if (My_club != club_ID)
+			{
+				i=BP.back().Neighbor.erase(i);//接住下一個的位子 不要讓iterator跑掉
+			}
+			else
+				i++;
+		}
 	}
 }
