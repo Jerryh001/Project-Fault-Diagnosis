@@ -2,6 +2,7 @@
 #include<string>
 #include<vector>
 #include<list>
+#include<algorithm>
 using namespace std;
 #ifndef BGRAPH_H
 #define BGRAPH_H
@@ -49,6 +50,7 @@ public:
 	bool IsBroken;
 	int Level;
 	bool IsIsolated;
+	BPoint* GoodStandard = NULL;
 	vector<Symptom> ComparedResult;
 	vector<Stauts> Neighbor;
 };
@@ -79,7 +81,9 @@ public:
 	void CreateGraph();//初始化
 	BPoint& GetPoint(string);//用ID取得點物件
 	void SetBroken(list<string>&);
-	void Point_Symptom_Get(BPoint&);//取得單一點症狀
+	void Point_Symptom_Get(BPoint&);
+	void Point_Symptom_Discover(BPoint&);
+	//取得單一點症狀
 	//設定壞點
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件

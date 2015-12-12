@@ -122,7 +122,68 @@ void BGraph::SetBroken(list<string> &P)//將壞點放入
 		GetPoint(BPoint(*i).ID).IsBroken = true;
 	}
 }
-void BGraph::Point_Symptom_Get(BPoint& p)//取得完整症狀
+void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
+{
+	int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
+	//BPoint* GoodStandard = NULL;
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); (p.GoodStandard == NULL) && a != p.Neighbor.end() - 1; a++)
+	{
+		for (vector<Stauts>::iterator b = a + 1; b != p.Neighbor.end(); b++)
+		{
+			if (p.IsBroken)
+			{
+				if (rand() % 10 < mode)
+				{
+					a->Guess = false;
+					p.GoodStandard = &GetPoint(a->ID);
+					break;
+				}
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
+				{
+					continue;
+				}
+				else
+				{
+					a->Guess = false;
+					p.GoodStandard = &GetPoint(a->ID);
+					break;
+				}
+			}
+		}
+	}
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); (p.GoodStandard != NULL) && a != p.Neighbor.end() - 1; a++)
+	{
+		if (a->ID == p.GoodStandard->ID)
+		{
+			continue;
+		}
+		else
+		{
+			if (p.IsBroken)
+			{
+				if (rand() % 10 < mode)
+				{
+					a->Guess = false;
+				}
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || p.GoodStandard->IsBroken)
+				{
+					continue;
+				}
+				else
+				{
+					a->Guess = false;
+				}
+			}
+		}
+	}
+}
+void BGraph::Point_Symptom_Discover(BPoint& p)//取得單一點中 未取得的症狀(只能在f_camp中呼叫)
 {
 	int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
 	BPoint* GoodStandard = NULL;
@@ -130,6 +191,11 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得完整症狀
 	{
 		for (vector<Stauts>::iterator b = a + 1; b != p.Neighbor.end(); b++)
 		{
+			if (GetPoint(a->ID).Component_ID == p.Component_ID)//a和p屬於同一Component
+			{
+				GoodStandard = &GetPoint(a->ID);
+				break;
+			}
 			if (p.IsBroken)
 			{
 				if (rand() % 10 < mode)
@@ -156,7 +222,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得完整症狀
 	}
 	for (vector<Stauts>::iterator a = p.Neighbor.begin(); a != p.Neighbor.end() - 1; a++)
 	{
-		if (&GetPoint(a->ID) == GoodStandard)
+		if (&GetPoint(a->ID) == GoodStandard|| GetPoint(a->ID).Component_ID==p.Component_ID)
 		{
 			continue;
 		}
@@ -183,13 +249,11 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得完整症狀
 		}
 	}
 }
-
 BComponent::BComponent(BPoint *B)
 {
 	member.push_back(B);
 	id = 0;
 }
-
 bool BComponent::Is_Link()const
 {
 	for (list<BPoint*>::const_iterator i = Sur_Point.begin(); i != Sur_Point.end(); i++)

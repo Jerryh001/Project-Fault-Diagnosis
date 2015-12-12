@@ -9,14 +9,14 @@ void BGraph::f_comp()
 		{
 			Point_Symptom_Get(*i);
 			list<BPoint*> todolist = { &*i };
-			Component.push_back( &*i );
+			Component.push_back(&*i);
 			i->Component_ID = &Component.back();
-			Component.back().id=(++Component.rbegin())->id+1;
+			Component.back().id = (++Component.rbegin())->id + 1;
 			while (todolist.size() > 0)
 			{
 				BPoint& head = *todolist.front();
 				todolist.pop_front();
-				
+
 				for (vector<Stauts>::const_iterator i = head.Neighbor.begin(); i != head.Neighbor.end(); i++)//檢查過去
 				{
 					if (i->Guess == false)//好點
@@ -59,9 +59,10 @@ void BGraph::FindGoodComp()
 		for (list<BPoint*>::iterator j = Component.front().member.begin(); j != Component.front().member.end(); j++)//每個孤立點
 		{
 			BPoint &B = *(*j);//孤立點本身
-			for (vector<Stauts>::iterator k =B.Neighbor.begin(); k != B.Neighbor.end(); k++)
+			for (vector<Stauts>::iterator k = B.Neighbor.begin(); k != B.Neighbor.end(); k++)
 			{
-				if (GetPoint(k->ID).Component_ID == &*i)
+				BPoint &KPoint = GetPoint(k->ID);
+				if (KPoint.Component_ID == &*i&&find(KPoint.Neighbor.begin(), KPoint.Neighbor.end(), Stauts{ B.ID,false }) != KPoint.Neighbor.end())//檢查是否有元件->孤立點
 				{
 					i->Sur_Point.push_back(&B);
 					break;
