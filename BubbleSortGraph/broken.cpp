@@ -41,4 +41,3 @@ void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞�
 	}
 	cout << endl;
 }
-

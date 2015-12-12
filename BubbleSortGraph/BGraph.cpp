@@ -92,6 +92,9 @@ void BStruct::Create(int l)//產生結構(空)
 		next.push_back(level - 1);
 	}
 }
+BGraph::BGraph()
+{
+}
 BGraph::BGraph(int L)
 {
 	Level = L;
@@ -269,4 +272,52 @@ bool BComponent::Is_Link()const
 		}
 	}
 	return false;
+}
+/*做local*/
+int Unitlevel = 4;
+void GetSubStruct(const BStruct& Bubble,vector<BStruct>& b)
+{
+	if (Bubble.level > Unitlevel)
+	{
+		for (int i = 0; i < Bubble.next.size(); i++)
+		{
+			GetSubStruct(Bubble.next[i], b);
+		}
+	}
+	else if (Bubble.level==Unitlevel)
+	{
+		b.push_back(Bubble);
+	}
+}
+
+Subgraph::Subgraph(BStruct &S)
+{
+	/*t,k有待修正*/
+	Level = Unitlevel;
+	k = Level - 1;//單次最少找出K個點
+	t = round(pow(2, Level - 2))*(Level - 3) / (Level - 1);
+	BS = S;
+	CopyGraphPoint(S.level, Point, BS);
+}
+
+void Subgraph::CopyGraphPoint(int n, list<BPoint> &BP, BStruct &BS)//因為Subgraph無法直接繼承BGraph的點 所以再建一個list<BPoint> 把點複製過來
+{
+	for (int i = 1; i <= n; i++)
+	{
+		CopyGraphPoint(n - 1, BP, BS.next.at(i - 1));
+	}
+	if (n == 0) {
+		BP.push_back(*BS.point);
+		string club_ID = string(BP.back().ID, Unitlevel);
+		for (vector<Stauts>::iterator i = BP.back().Neighbor.begin(); i!=BP.back().Neighbor.end();)
+		{
+			string My_club=string(i->ID, Unitlevel);
+			if (My_club != club_ID)
+			{
+				i=BP.back().Neighbor.erase(i);//接住下一個的位子 不要讓iterator跑掉
+			}
+			else
+				i++;
+		}
+	}
 }

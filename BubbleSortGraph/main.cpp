@@ -54,14 +54,21 @@ void output(const BGraph& Bubble)//顯示結果
 	cout.close();
 	system("start output.txt");
 }
+vector<BStruct> Sub_B;
 int main()
 {
 	int Level = 7;//階層數
 	int BrokenNum = 20;//壞點數
 	BGraph Bubble(Level);//圖
+	GetSubStruct(Bubble.BS, Sub_B);
+	Subgraph Sub_G(Sub_B[0]);
+
+
+	system("PAUSE");
 	list<string> pro;//壞點ID
 	prowhypoint(Level, BrokenNum, pro);
 	Bubble.SetBroken(pro);
+	Bubble.Symptom_Get();
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);

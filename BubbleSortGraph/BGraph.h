@@ -11,6 +11,7 @@ class BGraph;
 class BPoint;
 class BStruct;
 class BComponent;
+class Subgraph;
 ////////
 
 struct Symptom//點a和b的症狀 壞=true
@@ -69,18 +70,17 @@ public:
 
 class BGraph
 {
-private:
+public:
 	int Level;//階層
 	int t;
 	int k;
 	list<BPoint> Point;//點
 	BStruct BS;//階層狀結構
 	list<BComponent> Component;//元件
-public:
 	BGraph(int);
 	void CreateGraph();//初始化
 	BPoint& GetPoint(string);//用ID取得點物件
-	void SetBroken(list<string>&);
+	void SetBroken(list<string>&);//設定壞點
 	void Point_Symptom_Get(BPoint&);
 	void Point_Symptom_Discover(BPoint&);
 	//取得單一點症狀
@@ -89,7 +89,13 @@ public:
 	void FindGoodComp();//找好元件
 	friend void output(const BGraph&);
 };
-
+class Subgraph:public BGraph
+{
+public:
+	Subgraph(BStruct &);
+	void CopyGraphPoint(int , list<BPoint> &, BStruct &);//複製原圖點到子圖
+};
+void GetSubStruct(const BStruct& Bubble, vector<BStruct>& b);//複製原圖結構到子圖(複製結構)
 void prowhypoint(int, int, list<string> &);
 void Create(int, string, list<BPoint> &, BStruct &);
 #endif // BGRAPH_H
