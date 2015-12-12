@@ -76,7 +76,10 @@ public:
 	int k;
 	list<BPoint> Point;//點
 	BStruct BS;//階層狀結構
-	list<BComponent> Component;//元件
+	list<BComponent> Component;
+	
+	//元件
+	BGraph();
 	BGraph(int);
 	void CreateGraph();//初始化
 	BPoint& GetPoint(string);//用ID取得點物件

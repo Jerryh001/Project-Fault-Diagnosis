@@ -68,7 +68,6 @@ int main()
 	list<string> pro;//壞點ID
 	prowhypoint(Level, BrokenNum, pro);
 	Bubble.SetBroken(pro);
-	Bubble.Symptom_Get();
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);
