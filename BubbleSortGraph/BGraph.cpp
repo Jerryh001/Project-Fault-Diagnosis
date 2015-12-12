@@ -199,6 +199,10 @@ void GetSubStruct(const BStruct& Bubble,vector<BStruct>& b)
 
 Subgraph::Subgraph(BStruct &S)
 {
+	/*t,k有待修正*/
+	Level = Unitlevel;
+	k = Level - 1;//單次最少找出K個點
+	t = round(pow(2, Level - 2))*(Level - 3) / (Level - 1);
 	BS = S;
 	CopyGraphPoint(S.level, Point, BS);
 }
