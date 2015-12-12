@@ -11,19 +11,17 @@ BPoint::BPoint(const string &ID_C)
 	Level = 0;
 	IsIsolated = false;
 	ID_Created = ID_C;
-	Level =ID_C.length();
+	Level = static_cast<int>(ID_C.length());
 	ConvertToID();
 	Create_Neighbor();
 }
 void BPoint::Create_Neighbor()//記錄相鄰點
 {
-	//cout<<"Point"<<ID<<endl;
 	Neighbor.clear();
 	for (int i = 0; i < Level - 1; i++)
 	{
 		swap(ID[i], ID[i + 1]);
 		Neighbor.push_back({ ID,true });
-		//cout<<ID_Temp<<"is Neighbor"<<endl;
 		swap(ID[i], ID[i + 1]);
 	}
 }
@@ -48,14 +46,14 @@ string GetCreatedID(string ID)//一般ID轉創造用ID
 {
 	string C_ID;
 	string poto;
-	int Level = ID.length();
+	int Level = static_cast<int>(ID.length());
 	for (int i = Level; i > 0; i--)
 	{
 		poto += char(i + '0');
 	}
 	while (poto.length() > 0)
 	{
-		int current = poto.find(ID.back());
+		int current = static_cast<int>(poto.find(ID.back()));
 		C_ID = char(current + '1') + C_ID;
 		poto.erase(poto.begin() + current);
 		ID.pop_back();
@@ -68,7 +66,6 @@ BPoint& BGraph::GetPoint(string ID)//用ID找點的物件
 	BStruct *p = &BS;
 	for (string::reverse_iterator i = ID.rbegin(); i != ID.rend(); i++)
 	{
-		//cout << *i;
 		p = &p->next.at(*i - '1');
 	}
 	return *p->point;
@@ -102,7 +99,7 @@ BGraph::BGraph(int L)
 {
 	Level = L;
 	k = Level - 1;//單次最少找出K個點
-	t = round(pow(2, Level - 2))*(Level - 3) / (Level - 1);
+	t = static_cast<int>(round(pow(2, Level - 2))*(Level - 3) / (Level - 1));
 	BS.Create(Level);
 	CreateGraph();
 }
@@ -119,7 +116,6 @@ void Create(int n, string tail, list<BPoint> &BP, BStruct &BS)//遞迴產生點�
 	if (n == 0) {
 		BP.push_back(tail);
 		BS.Set_Point(BP.back());
-		//cout << tail << " " << BP.rbegin()->ID << " " << GetCreatedID(BP.rbegin()->ID) << endl;
 	}
 }
 void BGraph::SetBroken(list<string> &P)//將壞點放入
@@ -129,41 +125,138 @@ void BGraph::SetBroken(list<string> &P)//將壞點放入
 		GetPoint(BPoint(*i).ID).IsBroken = true;
 	}
 }
-void BGraph::Symptom_Get()//取得完整症狀
+void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 {
-	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
+	int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
+	//BPoint* GoodStandard = NULL;
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); (p.GoodStandard == NULL) && a != p.Neighbor.end() - 1; a++)
 	{
-		for (vector<Stauts>::iterator a = i->Neighbor.begin(); a != i->Neighbor.end() - 1; a++)
+		for (vector<Stauts>::iterator b = a + 1; b != p.Neighbor.end(); b++)
 		{
-			for (vector<Stauts>::iterator b = a + 1; b != i->Neighbor.end(); b++)
+			if (p.IsBroken)
 			{
-				i->ComparedResult.push_back({ a->ID, b->ID, false });
-				int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
-				if (i->IsBroken && (rand() % 10) > mode)
+				if (rand() % 10 < mode)
 				{
-					i->ComparedResult.back().value = true;
+					a->Guess = false;
+					p.GoodStandard = &GetPoint(a->ID);
+					break;
 				}
-				else if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
 				{
-					i->ComparedResult.back().value = true;
+					continue;
 				}
 				else
 				{
 					a->Guess = false;
-					b->Guess = false;
+					p.GoodStandard = &GetPoint(a->ID);
+					break;
 				}
-				//cout << "symptom " << i->ComparedResult.rbegin()->a << " and " << i->ComparedResult.rbegin()->b << " compared by " << i->ID << " is " << i->ComparedResult.rbegin()->value << endl;
+			}
+		}
+	}
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); (p.GoodStandard != NULL) && a != p.Neighbor.end() - 1; a++)
+	{
+		if (a->ID == p.GoodStandard->ID)
+		{
+			continue;
+		}
+		else
+		{
+			if (p.IsBroken)
+			{
+				if (rand() % 10 < mode)
+				{
+					a->Guess = false;
+				}
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || p.GoodStandard->IsBroken)
+				{
+					continue;
+				}
+				else
+				{
+					a->Guess = false;
+				}
 			}
 		}
 	}
 }
-
+void BGraph::Point_Symptom_Discover(BPoint& p)//取得單一點中 未取得的症狀(只能在f_camp中呼叫)
+{
+	int mode = 1;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
+	BPoint* GoodStandard = NULL;
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); (GoodStandard == NULL) && a != p.Neighbor.end() - 1; a++)
+	{
+		for (vector<Stauts>::iterator b = a + 1; b != p.Neighbor.end(); b++)
+		{
+			if (GetPoint(a->ID).Component_ID == p.Component_ID)//a和p屬於同一Component
+			{
+				GoodStandard = &GetPoint(a->ID);
+				break;
+			}
+			if (p.IsBroken)
+			{
+				if (rand() % 10 < mode)
+				{
+					a->Guess = false;
+					GoodStandard = &GetPoint(a->ID);
+					break;
+				}
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || GetPoint(b->ID).IsBroken)
+				{
+					continue;
+				}
+				else
+				{
+					a->Guess = false;
+					GoodStandard = &GetPoint(a->ID);
+					break;
+				}
+			}
+		}
+	}
+	for (vector<Stauts>::iterator a = p.Neighbor.begin(); a != p.Neighbor.end() - 1; a++)
+	{
+		if (&GetPoint(a->ID) == GoodStandard|| GetPoint(a->ID).Component_ID==p.Component_ID)
+		{
+			continue;
+		}
+		else
+		{
+			if (p.IsBroken)
+			{
+				if (rand() % 10 < mode)
+				{
+					a->Guess = false;
+				}
+			}
+			else
+			{
+				if (GetPoint(a->ID).IsBroken || GoodStandard->IsBroken)
+				{
+					continue;
+				}
+				else
+				{
+					a->Guess = false;
+				}
+			}
+		}
+	}
+}
 BComponent::BComponent(BPoint *B)
 {
 	member.push_back(B);
 	id = 0;
 }
-
 bool BComponent::Is_Link()const
 {
 	for (list<BPoint*>::const_iterator i = Sur_Point.begin(); i != Sur_Point.end(); i++)

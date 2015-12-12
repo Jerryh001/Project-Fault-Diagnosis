@@ -10,7 +10,7 @@ using namespace std;
 void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞點數量
 {
 	bool boo = 0;
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	cout << "bad point:";
 	while (c)
 	{
@@ -37,7 +37,6 @@ void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞�
 			cout << BPoint(p.back()).ID << " ";
 		}
 		boo = 0;
-		//strsav[i]=convert_str;
 		c--;
 	}
 	cout << endl;

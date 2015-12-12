@@ -2,11 +2,14 @@
 #include<string>
 #include<vector>
 #include<list>
+#include<algorithm>
 using namespace std;
 #ifndef BGRAPH_H
 #define BGRAPH_H
 ////////////////////
+class BGraph;
 class BPoint;
+class BStruct;
 class BComponent;
 class Subgraph;
 ////////
@@ -48,6 +51,7 @@ public:
 	bool IsBroken;
 	int Level;
 	bool IsIsolated;
+	BPoint* GoodStandard = NULL;
 	vector<Symptom> ComparedResult;
 	vector<Stauts> Neighbor;
 };
@@ -67,21 +71,23 @@ public:
 class BGraph
 {
 public:
-	BGraph();
-	BGraph(int);
-	void CreateGraph();//初始化
-	BPoint& GetPoint(string);//用ID取得點物件
-	void SetBroken(list<string>&);//設定壞點
-	void Symptom_Get();//取得完整症狀
-	void f_comp();//連接元件
-	void FindGoodComp();//找好元件
-	//void CheckPointComp(const BPoint&,list<BPoint>&);
 	int Level;//階層
 	int t;
 	int k;
 	list<BPoint> Point;//點
 	BStruct BS;//階層狀結構
 	list<BComponent> Component;//元件
+	BGraph(int);
+	void CreateGraph();//初始化
+	BPoint& GetPoint(string);//用ID取得點物件
+	void SetBroken(list<string>&);//設定壞點
+	void Point_Symptom_Get(BPoint&);
+	void Point_Symptom_Discover(BPoint&);
+	//取得單一點症狀
+	//設定壞點
+	void f_comp();//連接元件
+	void FindGoodComp();//找好元件
+	friend void output(const BGraph&);
 };
 class Subgraph:public BGraph
 {
