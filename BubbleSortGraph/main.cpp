@@ -42,24 +42,24 @@ void output(const BGraph& Bubble)//顯示結果
 	cout.close();
 	system("start output.txt");
 }
+vector<BStruct> Sub_B;
 int main()
 {
-
-	int Level = 5;//階層數
+	
+	int Level = 6;//階層數
 	int BrokenNum = 40;//壞點數
 	BGraph Bubble(Level);//圖
+	GetSubStruct(Bubble.BS, Sub_B);
+	Subgraph Sub_G(Sub_B[0]);
+
+
+	system("PAUSE");
 	list<string> pro;//壞點ID
 	//pro.push_back("1111");
 	prowhypoint(Level, BrokenNum, pro);
 	Bubble.SetBroken(pro);
 	Bubble.Symptom_Get();
-	/*for (list<BPoint>::iterator i = Bubble.Point.begin(); i != Bubble.Point.end(); i++)//顯示猜測結果
-	{
-		for (vector<Stauts>::iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
-		{
-			//cout << "Point " + i->ID + " consider that point " + j->ID + " is " + (j->Guess ? "Absolutely BAD" : "Maybe GOOD") << endl;
-		}
-	}*/
+
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);
