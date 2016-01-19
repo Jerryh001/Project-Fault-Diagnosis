@@ -64,12 +64,15 @@ BPoint& BGraph::GetPoint(string ID)//用ID找點的物件
 {
 	ID = GetCreatedID(ID);
 	BStruct *p = &BS;
-	for (string::reverse_iterator i = ID.rbegin(); i != ID.rend(); i++)
+	for (int i = Level - 1; i >= 0; i--)
 	{
-		p = &p->next.at(*i - '1');
+		p = &p->next.at(ID[i] - '1');
 	}
 	return *p->point;
 }
+
+
+
 BStruct::BStruct()
 {
 
@@ -275,6 +278,7 @@ bool BComponent::Is_Link()const
 }
 /*做local*/
 int Unitlevel = 4;
+
 void GetSubStruct(const BStruct& Bubble,vector<BStruct>& b)
 {
 	if (Bubble.level > Unitlevel)
@@ -290,12 +294,12 @@ void GetSubStruct(const BStruct& Bubble,vector<BStruct>& b)
 	}
 }
 
-Subgraph::Subgraph(BStruct &S)
+Subgraph::Subgraph(BStruct &S,const int& l)
 {
 	/*t,k有待修正*/
 	Level = Unitlevel;
-	k = Level - 1;//單次最少找出K個點
-	t = round(pow(2, Level - 2))*(Level - 3) / (Level - 1);
+	k = l - 1;//單次最少找出K個點
+	t = round(pow(2, l - 2))*(l - 3) / (l - 1);
 	BS = S;
 	CopyGraphPoint(S.level, Point, BS);
 }

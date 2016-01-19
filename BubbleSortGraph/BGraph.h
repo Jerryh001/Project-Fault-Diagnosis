@@ -95,7 +95,10 @@ public:
 class Subgraph:public BGraph
 {
 public:
-	Subgraph(BStruct &);
+	/*做local*/
+	int Unitlevel = 4;
+	//BPoint& GetPoint(string ID);
+	Subgraph(BStruct &, const int&);
 	void CopyGraphPoint(int , list<BPoint> &, BStruct &);//複製原圖點到子圖
 };
 void GetSubStruct(const BStruct& Bubble, vector<BStruct>& b);//複製原圖結構到子圖(複製結構)
