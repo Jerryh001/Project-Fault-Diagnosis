@@ -22,12 +22,9 @@ struct Symptom//點a和b的症狀 壞=true
 };
 struct Stauts//白箭頭與黑箭頭 黑=true
 {
-	string ID;
+	//string ID;
+	BPoint* Point;
 	bool Guess;
-	bool operator==(Stauts two)
-	{
-		return (ID == two.ID&&Guess == two.Guess);
-	}
 };
 class BComponent
 {
@@ -45,6 +42,7 @@ public:
 	BPoint(const string&);
 	void ConvertToID();
 	void Create_Neighbor();
+	
 	string ID_Created;
 	string ID;
 	BComponent* Component_ID=NULL;
@@ -83,14 +81,18 @@ public:
 	BGraph(int);
 	void CreateGraph();//初始化
 	BPoint& GetPoint(string);//用ID取得點物件
+	BPoint& GetPoint2(string);
+	BPoint& GetNeighbor(BPoint&,const int&);
+	void SetNeighber(BPoint&,const int&);
 	void SetBroken(list<string>&);//設定壞點
+	void RandomSetBroken(int);
 	void Point_Symptom_Get(BPoint&);
-	void Point_Symptom_Discover(BPoint&);
 	//取得單一點症狀
 	//設定壞點
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件
 	friend void output(const BGraph&);
+
 };
 class Subgraph:public BGraph
 {

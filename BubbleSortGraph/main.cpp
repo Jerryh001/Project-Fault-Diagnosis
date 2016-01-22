@@ -57,24 +57,26 @@ void output(const BGraph& Bubble)//顯示結果
 vector<BStruct> Sub_B;
 int main()
 {
-	int Level = 7;//階層數
-	int BrokenNum = 0;//壞點數
+	int Level = 9;//階層數
+	int BrokenNum = 10000;//壞點數
 	BGraph Bubble(Level);//圖
-	
-
+	Bubble.RandomSetBroken(BrokenNum);
 
 	//system("PAUSE");
-	list<string> pro;//壞點ID
-	prowhypoint(Level, BrokenNum, pro);
-	Bubble.SetBroken(pro);
+	//list<string> pro;//壞點ID
+	//prowhypoint(Level, BrokenNum, pro);
+	//Bubble.SetBroken(pro);
 
-	GetSubStruct(Bubble.BS, Sub_B);
-	Subgraph Sub_G(Sub_B[0], Level);
-
-	Sub_G.f_comp();
-	Sub_G.FindGoodComp();
-	output(Sub_G);
-	system("PAUSE");
+	//GetSubStruct(Bubble.BS, Sub_B);
+	//for (int i = 0; i < Sub_B.size(); i++)
+	//{
+	//	Subgraph Sub_G(Sub_B[i], Level);
+	//	Sub_G.f_comp();
+	//	Sub_G.FindGoodComp();
+	//}
+	//
+	//output(Sub_G);
+	//system("PAUSE");
 
 	Bubble.f_comp();
 	Bubble.FindGoodComp();

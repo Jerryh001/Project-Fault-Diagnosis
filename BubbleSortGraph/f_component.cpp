@@ -17,15 +17,14 @@ void BGraph::f_comp()
 				BPoint& head = *todolist.front();
 				todolist.pop_front();
 
-				for (vector<Stauts>::const_iterator i = head.Neighbor.begin(); i != head.Neighbor.end(); i++)//檢查過去
+				for (int j = 2; j <= Level;j++)//檢查過去
 				{
-					if (i->Guess == false)//好點
+					if (head.Neighbor[j-2].Guess == false)//好點
 					{
-						BPoint& JPoint = GetPoint(i->ID);
+						BPoint& JPoint = GetNeighbor(head,j);
 						if (JPoint.Component_ID != NULL) continue;
 						Point_Symptom_Get(JPoint);
-						vector<Stauts>::const_iterator& J = find(JPoint.Neighbor.begin(), JPoint.Neighbor.end(), Stauts{ head.ID,false });//檢查回來
-						if (J != JPoint.Neighbor.end())
+						if (JPoint.Neighbor[j-2].Guess==false)
 						{
 							JPoint.Component_ID = head.Component_ID;
 							JPoint.Component_ID->member.push_back(&JPoint);
@@ -35,9 +34,9 @@ void BGraph::f_comp()
 				}
 			}
 			i->IsIsolated = true;
-			for (vector<Stauts>::const_iterator j = i->Neighbor.begin(); j != i->Neighbor.end(); j++)
+			for (int j = 2; j <= Level;j++)
 			{
-				if (j->Guess == false)
+				if (i->Neighbor[j-2].Guess == false)
 				{
 					i->IsIsolated = false;
 					break;
@@ -54,20 +53,15 @@ void BGraph::f_comp()
 }
 void BGraph::FindGoodComp()
 {
-	for (list<BComponent>::iterator i = ++Component.begin(); i != Component.end(); i++)//每個元件
+	for (list<BPoint*>::iterator j = Component.front().member.begin(); j != Component.front().member.end(); j++)//每個孤立點
 	{
-		for (list<BPoint*>::iterator j = Component.front().member.begin(); j != Component.front().member.end(); j++)//每個孤立點
+		BPoint &B = *(*j);//孤立點本身
+		for (int k = 2; k <= Level; k++)
 		{
-			BPoint &B = *(*j);//孤立點本身
-			for (vector<Stauts>::iterator k = B.Neighbor.begin(); k != B.Neighbor.end(); k++)
+			BPoint &KPoint = GetNeighbor(B, k);
+			if (KPoint.Component_ID != B.Component_ID&&KPoint.Neighbor[k - 2].Guess == false)
 			{
-				BPoint &KPoint = GetPoint(k->ID);
-				if (KPoint.Component_ID == &*i&&find(KPoint.Neighbor.begin(), KPoint.Neighbor.end(), Stauts{ B.ID,false }) != KPoint.Neighbor.end())//檢查是否有元件->孤立點
-				{
-					i->Sur_Point.push_back(&B);
-					break;
-					//加入
-				}
+				KPoint.Component_ID->Sur_Point.push_back(&B);//加入
 			}
 		}
 	}

@@ -34,7 +34,7 @@ void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞�
 		if (boo == 0)
 		{
 			p.push_back(to_string(b));
-			cout << BPoint(p.back()).ID << " ";
+			//cout << BPoint(p.back()).ID << " ";
 		}
 		boo = 0;
 		c--;
