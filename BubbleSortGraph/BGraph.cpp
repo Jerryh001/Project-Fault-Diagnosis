@@ -1,4 +1,5 @@
 ﻿#include "BGraph.h"
+#include <fstream>
 BPoint::BPoint()
 {
 	IsBroken = false;
@@ -185,6 +186,18 @@ void BGraph::RandomSetBroken(int num)
 		}
 		p->point->IsBroken = true;
 		cout << p->point->ID << " ";
+		num--;
+	}
+}
+void BGraph::ReadSetBroken(int num)
+{
+	ifstream fin("whypointfile.txt");
+	string BrokenID;
+	cout << "bad point:";
+	while (fin>>BrokenID && num)
+	{
+		GetPoint(BrokenID).IsBroken=true;
+		cout << BrokenID << " ";
 		num--;
 	}
 }

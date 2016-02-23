@@ -57,12 +57,12 @@ void output(const BGraph& Bubble)//顯示結果
 vector<BStruct> Sub_B;
 int main()
 {
-	int Level = 9;//階層數
-	int BrokenNum = 10000;//壞點數
+	int Level = 5;//階層數
+	int BrokenNum = 5;//壞點數
 	BGraph Bubble(Level);//圖
-	Bubble.RandomSetBroken(BrokenNum);
-
-	//system("PAUSE");
+	//Bubble.RandomSetBroken(BrokenNum);
+	Bubble.ReadSetBroken(BrokenNum);
+	system("PAUSE");
 	//list<string> pro;//壞點ID
 	//prowhypoint(Level, BrokenNum, pro);
 	//Bubble.SetBroken(pro);

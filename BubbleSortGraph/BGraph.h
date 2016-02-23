@@ -85,6 +85,7 @@ public:
 	BPoint& GetNeighbor(BPoint&,const int&);
 	void SetNeighber(BPoint&,const int&);
 	void SetBroken(list<string>&);//設定壞點
+	void ReadSetBroken(int);
 	void RandomSetBroken(int);
 	void Point_Symptom_Get(BPoint&);
 	//取得單一點症狀
