@@ -35,7 +35,7 @@ public:
 	BComponent(BPoint*);
 	bool Is_Link()const;
 };
-class BPoint//可能可以改用map做
+class BPoint
 {
 public:
 	BPoint();
@@ -70,8 +70,11 @@ class BGraph
 {
 public:
 	int Level;//階層
-	int t;
+	//int t;
+	int T_UpperBound;
+	int T_LowerBound;
 	int k;
+	int PossibleBadSize;
 	list<BPoint> Point;//點
 	BStruct BS;//階層狀結構
 	list<BComponent> Component;

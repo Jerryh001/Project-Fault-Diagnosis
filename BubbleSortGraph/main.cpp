@@ -42,7 +42,7 @@ void output(const BGraph& Bubble)//顯示結果
 				badingood = true;
 			}
 		}
-		if (i->member.size() + i->Sur_Point.size() >= Bubble.t*(Bubble.Level - 1) / (Bubble.Level - 3) && !i->Is_Link())//不相鄰
+		if (i->member.size() + i->Sur_Point.size() > Bubble.PossibleBadSize && !i->Is_Link())//不相鄰
 		{
 			cout << "^^^^^^^This component is Fault-Free.^^^^^^^^^^^" << endl;
 			if (badingood)
@@ -58,11 +58,11 @@ vector<BStruct> Sub_B;
 int main()
 {
 	int Level = 5;//階層數
-	int BrokenNum = 5;//壞點數
+	int BrokenNum = 17;//壞點數
 	BGraph Bubble(Level);//圖
-	//Bubble.RandomSetBroken(BrokenNum);
-	Bubble.ReadSetBroken(BrokenNum);
-	system("PAUSE");
+	Bubble.RandomSetBroken(BrokenNum);
+	//Bubble.ReadSetBroken(BrokenNum);
+	//system("PAUSE");
 	//list<string> pro;//壞點ID
 	//prowhypoint(Level, BrokenNum, pro);
 	//Bubble.SetBroken(pro);

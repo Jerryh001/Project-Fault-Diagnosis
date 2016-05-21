@@ -19,7 +19,7 @@ BPoint::BPoint(const string &ID_C)
 void BPoint::Create_Neighbor()//記錄相鄰點
 {
 	Neighbor.clear();
-	Neighbor.resize(Level - 1, {NULL,true});
+	Neighbor.resize(Level - 1, { NULL,true });
 }
 BPoint& BGraph::GetNeighbor(BPoint& B, const int& l)//2<=l<=Level
 {
@@ -29,7 +29,7 @@ BPoint& BGraph::GetNeighbor(BPoint& B, const int& l)//2<=l<=Level
 	}
 	return *B.Neighbor[l - 2].Point;
 }
-void BGraph::SetNeighber(BPoint& B,const int& l)
+void BGraph::SetNeighber(BPoint& B, const int& l)
 {
 	int i = Level - 1;
 	BStruct *p = &BS;
@@ -143,10 +143,16 @@ BGraph::BGraph()
 BGraph::BGraph(int L)
 {
 	Level = L;
-	k = Level - 1;//單次最少找出K個點
-	t = static_cast<int>(round(pow(2, Level - 2))*(Level - 3) / (Level - 1));
 	BS.Create(Level);
 	CreateGraph();
+	int a = 3 * Level - 10;
+	int c = 12 - 3 * Level - Point.size();
+	int max_comps = floor((sqrt(4 - 4 * a*c) - 2) / (2 * a));
+	k = Level - 1;//單次最少找出K個點
+	T_UpperBound = Point.size() / (max_comps + 1);
+	T_LowerBound = (max_comps - 1)*(3 * Level - 10) + 2;
+	PossibleBadSize = T_UpperBound / 3 + T_UpperBound;
+
 }
 void BGraph::CreateGraph()//產生點的呼叫
 {
@@ -194,9 +200,9 @@ void BGraph::ReadSetBroken(int num)
 	ifstream fin("whypointfile.txt");
 	string BrokenID;
 	cout << "bad point:";
-	while (fin>>BrokenID && num)
+	while (fin >> BrokenID && num)
 	{
-		GetPoint(BrokenID).IsBroken=true;
+		GetPoint(BrokenID).IsBroken = true;
 		cout << BrokenID << " ";
 		num--;
 	}
@@ -211,7 +217,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 		{
 			if (p.IsBroken)
 			{
-				if (rand() % 10 < mode)
+				if (GetNeighbor(p, a).IsBroken)
 				{
 					p.Neighbor[a - 2].Guess = false;
 					p.GoodStandard = &GetNeighbor(p, a);
@@ -233,9 +239,9 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 			}
 		}
 	}
-	for (int a = 2; a <= Level&&p.GoodStandard!=NULL; a++)
+	for (int a = 2; a <= Level&&p.GoodStandard != NULL; a++)
 	{
-		if (&GetNeighbor(p,a) == p.GoodStandard)
+		if (&GetNeighbor(p, a) == p.GoodStandard)
 		{
 			continue;
 		}
@@ -243,7 +249,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 		{
 			if (p.IsBroken)
 			{
-				if (rand() % 10 < mode)
+				if (GetNeighbor(p, a).IsBroken)
 				{
 					p.Neighbor[a - 2].Guess = false;
 				}
@@ -286,7 +292,7 @@ bool BComponent::Is_Link()const
 /*做local*/
 int Unitlevel = 4;
 
-void GetSubStruct(const BStruct& Bubble,vector<BStruct>& b)
+void GetSubStruct(const BStruct& Bubble, vector<BStruct>& b)
 {
 	if (Bubble.level > Unitlevel)
 	{
@@ -295,18 +301,18 @@ void GetSubStruct(const BStruct& Bubble,vector<BStruct>& b)
 			GetSubStruct(Bubble.next[i], b);
 		}
 	}
-	else if (Bubble.level==Unitlevel)
+	else if (Bubble.level == Unitlevel)
 	{
 		b.push_back(Bubble);
 	}
 }
 
-Subgraph::Subgraph(BStruct &S,const int& l)
+Subgraph::Subgraph(BStruct &S, const int& l)
 {
 	/*t,k有待修正*/
 	Level = Unitlevel;
 	k = l - 1;//單次最少找出K個點
-	t = round(pow(2, l - 2))*(l - 3) / (l - 1);
+	T_LowerBound = T_UpperBound = round(pow(2, l - 2))*(l - 3) / (l - 1);
 	BS = S;
 	CopyGraphPoint(S.level, Point, BS);
 }
@@ -321,12 +327,12 @@ void Subgraph::CopyGraphPoint(int n, list<BPoint> &BP, BStruct &BS)//因為Subgr
 		BP.push_back(*BS.point);
 		BS.point = &BP.back();
 		string club_ID = string(BP.back().ID, Unitlevel);
-		for (vector<Stauts>::iterator i = BP.back().Neighbor.begin(); i!=BP.back().Neighbor.end();)
+		for (vector<Stauts>::iterator i = BP.back().Neighbor.begin(); i != BP.back().Neighbor.end();)
 		{
-			string My_club=string(i->Point->ID, Unitlevel);
+			string My_club = string(i->Point->ID, Unitlevel);
 			if (My_club != club_ID)
 			{
-				i=BP.back().Neighbor.erase(i);//接住下一個的位子 不要讓iterator跑掉
+				i = BP.back().Neighbor.erase(i);//接住下一個的位子 不要讓iterator跑掉
 			}
 			else
 				i++;
