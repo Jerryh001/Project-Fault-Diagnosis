@@ -37,5 +37,8 @@
     <Text Include="output.txt">
       <Filter>資源檔</Filter>
     </Text>
+    <Text Include="whypointfile.txt">
+      <Filter>資源檔</Filter>
+    </Text>
   </ItemGroup>
 </Project>

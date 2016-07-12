@@ -26,13 +26,18 @@ struct Stauts//白箭頭與黑箭頭 黑=true
 	BPoint* Point;
 	bool Guess;
 };
+enum ComponentStatus { Undefined=-1, Good=0, Bad=1 };
 class BComponent
 {
+	ComponentStatus Status;
 public:
 	int id;
 	list<BPoint*> member;//這個component裡面有哪些點
 	list<BPoint*> Sur_Point;//這個component周圍的孤立點
 	BComponent(BPoint*);
+	void SetAsGood();
+	void SetAsBad();
+	ComponentStatus GetStatus() const;
 	bool Is_Link()const;
 };
 class BPoint
@@ -45,11 +50,11 @@ public:
 	
 	string ID_Created;
 	string ID;
-	BComponent* Component_ID=NULL;
+	BComponent* Component_ID=nullptr;
 	bool IsBroken;
 	int Level;
 	bool IsIsolated;
-	BPoint* GoodStandard = NULL;
+	BPoint* GoodStandard = nullptr;
 	vector<Symptom> ComparedResult;
 	vector<Stauts> Neighbor;
 };
@@ -62,7 +67,7 @@ public:
 	void Set_Point(BPoint&);
 	void Create(int);
 	int level;
-	BPoint* point = NULL;
+	BPoint* point = nullptr;
 	vector<BStruct> next;
 };
 

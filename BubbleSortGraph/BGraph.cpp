@@ -1,5 +1,6 @@
 ﻿#include "BGraph.h"
 #include <fstream>
+#include<ctime>
 BPoint::BPoint()
 {
 	IsBroken = false;
@@ -19,11 +20,11 @@ BPoint::BPoint(const string &ID_C)
 void BPoint::Create_Neighbor()//記錄相鄰點
 {
 	Neighbor.clear();
-	Neighbor.resize(Level - 1, { NULL,true });
+	Neighbor.resize(Level - 1, { nullptr,true });
 }
 BPoint& BGraph::GetNeighbor(BPoint& B, const int& l)//2<=l<=Level
 {
-	if (B.Neighbor[l - 2].Point == NULL)
+	if (B.Neighbor[l - 2].Point == nullptr)
 	{
 		SetNeighber(B, l);
 	}
@@ -151,7 +152,7 @@ BGraph::BGraph(int L)
 	k = Level - 1;//單次最少找出K個點
 	T_UpperBound = Point.size() / (max_comps + 1);
 	T_LowerBound = (max_comps - 1)*(3 * Level - 10) + 2;
-	PossibleBadSize = T_UpperBound / 3 + T_UpperBound;
+	PossibleBadSize = T_UpperBound+1;
 
 }
 void BGraph::CreateGraph()//產生點的呼叫
@@ -178,6 +179,7 @@ void BGraph::SetBroken(list<string> &P)//將壞點放入
 }
 void BGraph::RandomSetBroken(int num)
 {
+	srand(time(NULL));
 	cout << "bad point:";
 	while (num)
 	{
@@ -191,7 +193,7 @@ void BGraph::RandomSetBroken(int num)
 			continue;
 		}
 		p->point->IsBroken = true;
-		cout << p->point->ID << " ";
+		//cout << p->point->ID << " ";
 		num--;
 	}
 }
@@ -239,7 +241,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 			}
 		}
 	}
-	for (int a = 2; a <= Level&&p.GoodStandard != NULL; a++)
+	for (int a = 2; a <= Level&&p.GoodStandard != nullptr; a++)
 	{
 		if (&GetNeighbor(p, a) == p.GoodStandard)
 		{
@@ -249,10 +251,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 		{
 			if (p.IsBroken)
 			{
-				if (GetNeighbor(p, a).IsBroken)
-				{
 					p.Neighbor[a - 2].Guess = false;
-				}
 			}
 			else
 			{
@@ -272,6 +271,19 @@ BComponent::BComponent(BPoint *B)
 {
 	member.push_back(B);
 	id = 0;
+	Status = Undefined;
+}
+void BComponent::SetAsGood()
+{
+	Status = Good;
+}
+void BComponent::SetAsBad()
+{
+	Status = Bad;
+}
+ComponentStatus BComponent::GetStatus() const
+{
+	return Status;
 }
 bool BComponent::Is_Link()const
 {

@@ -23,11 +23,13 @@ void output(const BGraph& Bubble)//顯示結果
 		cout << "Component " << i->id << " Contain the following Point(s):" << endl;
 		for (list<BPoint* > ::const_iterator j = i->member.begin(); j != i->member.end(); j++)
 		{
-			cout << "	Point " + (*j)->ID << endl;
+			cout << "	Point " + (*j)->ID;
 			if ((*j)->IsBroken)
 			{
+				cout << 'x';
 				badingood = true;
 			}
+			cout << endl;
 		}
 		cout << "...Ans Contain the following Isolated Point(s):" << endl;
 		if (i->Sur_Point.size() == 0)
@@ -36,19 +38,25 @@ void output(const BGraph& Bubble)//顯示結果
 		}
 		for (list<BPoint* > ::const_iterator j = i->Sur_Point.begin(); j != i->Sur_Point.end(); j++)
 		{
-			cout << "	Point " + (*j)->ID << endl;
+			cout << "	Point " + (*j)->ID;
 			if ((*j)->IsBroken)
 			{
+				cout << 'x';
 				badingood = true;
 			}
+			cout << endl;
 		}
-		if (i->member.size() + i->Sur_Point.size() > Bubble.PossibleBadSize && !i->Is_Link())//不相鄰
+		if (i->member.size() + i->Sur_Point.size() > Bubble.PossibleBadSize && !i->Is_Link()&& i->GetStatus()!=Bad)//不相鄰
 		{
 			cout << "^^^^^^^This component is Fault-Free.^^^^^^^^^^^" << endl;
 			if (badingood)
 			{
 				cout << "^^^^^^^^^^^^^^But there is a bad point in it^^^^^" << endl;
 			}
+		}
+		if (i->GetStatus() == Bad)
+		{
+			cout << "^^^^^^^This component is Faulty.(by new algorithm)^^^^^^^^^^^" << endl;
 		}
 	}
 	cout.close();
@@ -60,24 +68,8 @@ int main()
 	int Level = 5;//階層數
 	int BrokenNum = 17;//壞點數
 	BGraph Bubble(Level);//圖
-	Bubble.RandomSetBroken(BrokenNum);
-	//Bubble.ReadSetBroken(BrokenNum);
-	//system("PAUSE");
-	//list<string> pro;//壞點ID
-	//prowhypoint(Level, BrokenNum, pro);
-	//Bubble.SetBroken(pro);
-
-	//GetSubStruct(Bubble.BS, Sub_B);
-	//for (int i = 0; i < Sub_B.size(); i++)
-	//{
-	//	Subgraph Sub_G(Sub_B[i], Level);
-	//	Sub_G.f_comp();
-	//	Sub_G.FindGoodComp();
-	//}
-	//
-	//output(Sub_G);
-	//system("PAUSE");
-
+	Bubble.ReadSetBroken(BrokenNum);
+	//Bubble.RandomSetBroken(BrokenNum);
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);

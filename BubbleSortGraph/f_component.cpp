@@ -1,11 +1,12 @@
 ﻿#include "BGraph.h"
+#include<map>
 void BGraph::f_comp()
 {
-	Component.push_back(NULL);//預留給孤立點的"元件"
+	Component.push_back(nullptr);//預留給孤立點的"元件"
 	Component.front().member.clear();
 	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
 	{
-		if (i->Component_ID == NULL)
+		if (i->Component_ID == nullptr)
 		{
 			Point_Symptom_Get(*i);
 			list<BPoint*> todolist = { &*i };
@@ -22,7 +23,7 @@ void BGraph::f_comp()
 					if (head.Neighbor[j-2].Guess == false)//好點
 					{
 						BPoint& JPoint = GetNeighbor(head,j);
-						if (JPoint.Component_ID != NULL) continue;
+						if (JPoint.Component_ID != nullptr) continue;
 						Point_Symptom_Get(JPoint);
 						if (JPoint.Neighbor[j-2].Guess==false)
 						{
@@ -56,12 +57,21 @@ void BGraph::FindGoodComp()
 	for (list<BPoint*>::iterator j = Component.front().member.begin(); j != Component.front().member.end(); j++)//每個孤立點
 	{
 		BPoint &B = *(*j);//孤立點本身
+		map<int, int> complist;
 		for (int k = 2; k <= Level; k++)
 		{
 			BPoint &KPoint = GetNeighbor(B, k);
-			if (KPoint.Component_ID != B.Component_ID&&KPoint.Neighbor[k - 2].Guess == false)
+			if (KPoint.Neighbor[k - 2].Guess == false)
 			{
-				KPoint.Component_ID->Sur_Point.push_back(&B);//加入
+				int id = KPoint.Component_ID->id;
+				if (complist[id] > 0)
+				{
+					KPoint.Component_ID->SetAsBad();
+				}else
+				{
+					KPoint.Component_ID->Sur_Point.push_back(&B);//加入
+					complist[id]++;
+				}
 			}
 		}
 	}
