@@ -100,6 +100,7 @@ public:
 	//設定壞點
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件
+	void LiarCheck(BPoint&);
 	friend void output(const BGraph&);
 
 };

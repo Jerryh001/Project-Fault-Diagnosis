@@ -211,8 +211,6 @@ void BGraph::ReadSetBroken(int num)
 }
 void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 {
-	int mode = 5;//5=一般壞點 1=在座的各位都是壞點 8=沒甚麼壞的點
-	//BPoint* GoodStandard = NULL;
 	for (int a = 2; a < Level; a++)
 	{
 		for (int b = a + 1; b <= Level; b++)
@@ -221,7 +219,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 			{
 				if (GetNeighbor(p, a).IsBroken)
 				{
-					p.Neighbor[a - 2].Guess = false;
+					p.Neighbor[a - 2].Guess = false;//必定挑第一個壞點
 					p.GoodStandard = &GetNeighbor(p, a);
 					break;
 				}
@@ -251,7 +249,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 		{
 			if (p.IsBroken)
 			{
-					p.Neighbor[a - 2].Guess = false;
+				p.Neighbor[a - 2].Guess = rand() % 10 > 2 ? false:true;//隨機壞點症狀 產生位置在這裡
 			}
 			else
 			{

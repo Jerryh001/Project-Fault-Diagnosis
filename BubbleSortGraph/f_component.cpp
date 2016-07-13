@@ -30,6 +30,7 @@ void BGraph::f_comp()
 							JPoint.Component_ID = head.Component_ID;
 							JPoint.Component_ID->member.push_back(&JPoint);
 							todolist.push_back(&JPoint);
+							LiarCheck(JPoint);
 						}
 					}
 				}
@@ -72,6 +73,22 @@ void BGraph::FindGoodComp()
 					KPoint.Component_ID->Sur_Point.push_back(&B);//加入
 					complist[id]++;
 				}
+			}
+		}
+	}
+}
+
+void BGraph::LiarCheck(BPoint& p)
+{
+	for (int i = 2; i <= Level; i++)
+	{
+		if (p.Neighbor[i - 2].Point->Component_ID == p.Component_ID)
+		{
+			if (p.Neighbor[i - 2].Guess == true || p.Neighbor[i - 2].Point->Neighbor[i - 2].Guess == true)
+			{
+				p.Component_ID->SetAsBad();
+				cout << "FOUND!!" << endl;
+				return;
 			}
 		}
 	}
