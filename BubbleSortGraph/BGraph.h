@@ -94,10 +94,10 @@ public:
 	void SetNeighber(BPoint&,const int&);
 	void SetBroken(list<string>&);//設定壞點
 	void ReadSetBroken(int);
-	void RandomSetBroken(int);
+	void RandomSetBroken(int);//設定壞點
 	void Point_Symptom_Get(BPoint&);
 	//取得單一點症狀
-	//設定壞點
+	void All_Symptom_GetAndWrite();
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件
 	void LiarCheck(BPoint&);

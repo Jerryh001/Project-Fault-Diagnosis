@@ -1,5 +1,7 @@
 ﻿#include "BGraph.h"
+#include "BGraph.h"
 #include<map>
+
 void BGraph::f_comp()
 {
 	Component.push_back(nullptr);//預留給孤立點的"元件"

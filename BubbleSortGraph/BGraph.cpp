@@ -152,7 +152,7 @@ BGraph::BGraph(int L)
 	k = Level - 1;//單次最少找出K個點
 	T_UpperBound = Point.size() / (max_comps + 1);
 	T_LowerBound = (max_comps - 1)*(3 * Level - 10) + 2;
-	PossibleBadSize = T_UpperBound+1;
+	PossibleBadSize = T_UpperBound + 1;
 
 }
 void BGraph::CreateGraph()//產生點的呼叫
@@ -179,8 +179,9 @@ void BGraph::SetBroken(list<string> &P)//將壞點放入
 }
 void BGraph::RandomSetBroken(int num)
 {
+	ofstream fout("broken.point");
 	srand(time(NULL));
-	cout << "bad point:";
+	cout << "Bad points:" << endl;
 	while (num)
 	{
 		BStruct *p = &BS;
@@ -193,9 +194,12 @@ void BGraph::RandomSetBroken(int num)
 			continue;
 		}
 		p->point->IsBroken = true;
-		//cout << p->point->ID << " ";
+		cout << p->point->ID << endl;
+		fout << p->point->ID << endl;
 		num--;
 	}
+	fout.close();
+	cout << "File \"broken.point\" saved." << endl;
 }
 void BGraph::ReadSetBroken(int num)
 {
@@ -217,12 +221,9 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 		{
 			if (p.IsBroken)
 			{
-				if (GetNeighbor(p, a).IsBroken)
-				{
-					p.Neighbor[a - 2].Guess = false;//必定挑第一個壞點
-					p.GoodStandard = &GetNeighbor(p, a);
-					break;
-				}
+				p.Neighbor[a - 2].Guess = false;//必定挑第一個點
+				p.GoodStandard = &GetNeighbor(p, a);
+				break;
 			}
 			else
 			{
@@ -249,7 +250,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 		{
 			if (p.IsBroken)
 			{
-				p.Neighbor[a - 2].Guess = rand() % 10 > 2 ? false:true;//隨機壞點症狀 產生位置在這裡
+				p.Neighbor[a - 2].Guess = rand() % 10 > 2 ? false : true;//隨機壞點症狀 產生位置在這裡
 			}
 			else
 			{
@@ -264,6 +265,34 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 			}
 		}
 	}
+}
+void BGraph::All_Symptom_GetAndWrite()
+{
+	ofstream fout("symptom.all");
+	fout << Level << endl;
+	srand(time(nullptr));
+	bool ans = false;
+	for (list<BPoint>::iterator it = Point.begin(); it != Point.end(); it++)
+	{
+		for (int a = 2; a < Level; a++)
+		{
+			for (int b = a + 1; b <= Level; b++)
+			{
+				BPoint& N1 = GetNeighbor(*it, a);
+				BPoint& N2 = GetNeighbor(*it, b);
+				if (it->IsBroken)
+				{
+					ans = (rand() % 10 > 5) ? true : false;
+				}
+				else
+				{
+					ans = N1.IsBroken || N2.IsBroken;
+				}
+				fout << it->ID << " " << N1.ID << " " << N2.ID << " " << ans << endl;
+			}
+		}
+	}
+	cout << "All symptom saved to file \"symptom.all\"" << endl;
 }
 BComponent::BComponent(BPoint *B)
 {
