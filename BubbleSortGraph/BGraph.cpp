@@ -1,6 +1,7 @@
 ﻿#include "BGraph.h"
 #include <fstream>
 #include<ctime>
+#include<map>
 BPoint::BPoint()
 {
 	IsBroken = false;
@@ -141,11 +142,24 @@ void BStruct::Create(int l)//產生結構(空)
 BGraph::BGraph()
 {
 }
-BGraph::BGraph(int L)
+BGraph::BGraph(const int& L)
 {
 	Level = L;
 	BS.Create(Level);
 	CreateGraph();
+	CalculateValue();
+}
+BGraph::BGraph(const string& filename)
+{
+	ifstream fin(filename);
+	fin >> Level;
+	BS.Create(Level);
+	CreateGraph();
+	CalculateValue();
+	AllStatusSet(fin);
+}
+void BGraph::CalculateValue()
+{
 	int a = 3 * Level - 10;
 	int c = 12 - 3 * Level - Point.size();
 	int max_comps = floor((sqrt(4 - 4 * a*c) - 2) / (2 * a));
@@ -153,7 +167,6 @@ BGraph::BGraph(int L)
 	T_UpperBound = Point.size() / (max_comps + 1);
 	T_LowerBound = (max_comps - 1)*(3 * Level - 10) + 2;
 	PossibleBadSize = T_UpperBound + 1;
-
 }
 void BGraph::CreateGraph()//產生點的呼叫
 {
@@ -265,6 +278,33 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 			}
 		}
 	}
+}
+void BGraph::AllStatusSet(ifstream& fin)//先做暴力展開 晚點再改
+{
+	string point, pre, N1, N2;
+	int guess;
+	map<string, bool> temp;
+	while (1)
+	{
+		pre = point;
+		fin >> point >> N1 >> N2;
+		if (fin.eof()) return;
+		fin >> guess;
+		if (pre != ""&&pre != point)
+		{
+			BPoint& BP = GetPoint(pre);
+			for (int i = 2; i <= Level; i++)
+			{
+				BP.Neighbor[i - 2].Guess = !temp[GetNeighbor(BP, i).ID];
+			}
+			temp.clear();
+		}
+		if (guess == 0)
+		{
+			temp[N1] = temp[N2] = true;//與其他地方不同 這裡true才表示是好點
+		}
+	}
+
 }
 void BGraph::All_Symptom_GetAndWrite()
 {

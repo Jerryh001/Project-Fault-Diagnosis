@@ -55,7 +55,7 @@ public:
 	int Level;
 	bool IsIsolated;
 	BPoint* GoodStandard = nullptr;
-	vector<Symptom> ComparedResult;
+	//vector<Symptom> ComparedResult;//貌似沒用到
 	vector<Stauts> Neighbor;
 };
 string GetCreatedID(string);
@@ -86,7 +86,9 @@ public:
 	
 	//元件
 	BGraph();
-	BGraph(int);
+	BGraph(const int&);
+	BGraph(const string&);
+	void CalculateValue();
 	void CreateGraph();//初始化
 	BPoint& GetPoint(string);//用ID取得點物件
 	BPoint& GetPoint2(string);
@@ -96,6 +98,7 @@ public:
 	void ReadSetBroken(int);
 	void RandomSetBroken(int);//設定壞點
 	void Point_Symptom_Get(BPoint&);
+	void AllStatusSet(ifstream&);
 	//取得單一點症狀
 	void All_Symptom_GetAndWrite();
 	void f_comp();//連接元件

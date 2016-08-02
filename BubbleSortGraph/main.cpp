@@ -65,14 +65,15 @@ void output(const BGraph& Bubble)//顯示結果
 vector<BStruct> Sub_B;
 int main()
 {
-	int Level = 9;//階層數
+	/*int Level = 9;//階層數
 	int BrokenNum = 17;//壞點數
 	BGraph Bubble(Level);//圖
 	//Bubble.ReadSetBroken(BrokenNum);
 	Bubble.RandomSetBroken(Bubble.T_LowerBound);
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
-	output(Bubble);
+	output(Bubble);*/
+	BGraph Bubble("symptom.all");
 	system("PAUSE");
 	return 0;
 }
