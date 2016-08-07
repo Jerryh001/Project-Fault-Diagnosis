@@ -35,6 +35,9 @@
     <Text Include="output.txt" />
     <Text Include="whypointfile.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="symptom.all" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A941AD6E-F106-418D-B34E-EADF79A69A80}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

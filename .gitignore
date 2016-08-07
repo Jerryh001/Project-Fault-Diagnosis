@@ -197,3 +197,4 @@ FakesAssemblies/
 /SymptomGenerater/symptom.all
 /SymptomGenerater/broken.point
 /BubbleSortGraph/symptom.all
+*.txt

@@ -73,7 +73,15 @@ int main()
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);*/
+	cout << "Start reading symptom." << endl;
 	BGraph Bubble("symptom.all");
+	cout << "All symptom readed." << endl;
+	cout << "Finding Component." << endl;
+	Bubble.ComponentGet();
+	cout << "Component done." << endl;
+	Bubble.FindGoodComp();
+	output(Bubble);
 	system("PAUSE");
+
 	return 0;
 }

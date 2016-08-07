@@ -90,9 +90,10 @@ public:
 	BGraph(const string&);
 	void CalculateValue();
 	void CreateGraph();//初始化
-	BPoint& GetPoint(string);//用ID取得點物件
-	BPoint& GetPoint2(string);
+	BPoint& GetPoint(const string&);//用ID取得點物件
+	BPoint& GetPointByCreateID(const string&);
 	BPoint& GetNeighbor(BPoint&,const int&);
+	int GetNeighborLevel(const string&, const string&);
 	void SetNeighber(BPoint&,const int&);
 	void SetBroken(list<string>&);//設定壞點
 	void ReadSetBroken(int);
@@ -101,6 +102,7 @@ public:
 	void AllStatusSet(ifstream&);
 	//取得單一點症狀
 	void All_Symptom_GetAndWrite();
+	void ComponentGet();
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件
 	void LiarCheck(BPoint&);

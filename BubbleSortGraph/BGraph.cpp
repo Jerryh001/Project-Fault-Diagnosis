@@ -31,33 +31,26 @@ BPoint& BGraph::GetNeighbor(BPoint& B, const int& l)//2<=l<=Level
 	}
 	return *B.Neighbor[l - 2].Point;
 }
+int BGraph::GetNeighborLevel(const string& point_IDC, const string& nei_IDC)//未完全驗證
+{
+	int level = Level-1;
+	for (; level>=0&&point_IDC[level] == nei_IDC[level]; level--);
+	return level + 1;
+
+}
 void BGraph::SetNeighber(BPoint& B, const int& l)
 {
-	int i = Level - 1;
-	BStruct *p = &BS;
-	while (i >= 0)
+	string Neighber_ID_Created = B.ID_Created;
+	if (B.ID_Created[l - 2] < B.ID_Created[l - 1])//不確定對不對 需要驗證
 	{
-		if (i == l - 1)
-		{
-			if (B.ID_Created[i - 1] < B.ID_Created[i])
-			{
-				p = &p->next[B.ID_Created[i - 1] - '1'];
-				p = &p->next[B.ID_Created[i] - '1' - 1];
-			}
-			else
-			{
-				p = &p->next[B.ID_Created[i - 1] - '1' + 1];
-				p = &p->next[B.ID_Created[i] - '1'];
-			}
-			i -= 2;
-		}
-		else
-		{
-			p = &p->next[B.ID_Created[i] - '1'];
-			i--;
-		}
+		Neighber_ID_Created[l - 1]--;
 	}
-	B.Neighbor[l - 2].Point = p->point;
+	else
+	{
+		Neighber_ID_Created[l - 2]++;
+	}
+	swap(Neighber_ID_Created[l - 2], Neighber_ID_Created[l - 1]);
+	B.Neighbor[l - 2].Point = &GetPointByCreateID(Neighber_ID_Created);
 }
 void BPoint::ConvertToID()//創造用ID轉一般ID
 {
@@ -94,18 +87,12 @@ string GetCreatedID(string ID)//一般ID轉創造用ID
 	}
 	return C_ID;
 }
-BPoint& BGraph::GetPoint(string ID)//用ID找點的物件
+BPoint& BGraph::GetPoint(const string& ID)//用ID找點的物件
 {
-	ID = GetCreatedID(ID);
-	BStruct *p = &BS;
-	for (int i = Level - 1; i >= 0; i--)
-	{
-		p = &p->next.at(ID[i] - '1');
-	}
-	return *p->point;
+	return GetPointByCreateID(GetCreatedID(ID));
 }
 
-BPoint & BGraph::GetPoint2(string ID)
+BPoint & BGraph::GetPointByCreateID(const string& ID)
 {
 	BStruct *p = &BS;
 	for (int i = Level - 1; i >= 0; i--)
@@ -279,29 +266,24 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 		}
 	}
 }
-void BGraph::AllStatusSet(ifstream& fin)//先做暴力展開 晚點再改
+void BGraph::AllStatusSet(ifstream& fin)
 {
-	string point, pre, N1, N2;
+	BPoint* BP=nullptr;
+	string point, N1, N2;
 	int guess;
 	map<string, bool> temp;
 	while (1)
 	{
-		pre = point;
 		fin >> point >> N1 >> N2;
 		if (fin.eof()) return;
 		fin >> guess;
-		if (pre != ""&&pre != point)
-		{
-			BPoint& BP = GetPoint(pre);
-			for (int i = 2; i <= Level; i++)
-			{
-				BP.Neighbor[i - 2].Guess = !temp[GetNeighbor(BP, i).ID];
-			}
-			temp.clear();
-		}
 		if (guess == 0)
 		{
-			temp[N1] = temp[N2] = true;//與其他地方不同 這裡true才表示是好點
+			if (BP == nullptr || BP->ID_Created != point)
+			{
+				BP = &GetPointByCreateID(point);
+			}
+			BP->Neighbor[GetNeighborLevel(point, N1)-2].Guess= BP->Neighbor[GetNeighborLevel(point, N2) - 2].Guess=false;
 		}
 	}
 
@@ -328,11 +310,64 @@ void BGraph::All_Symptom_GetAndWrite()
 				{
 					ans = N1.IsBroken || N2.IsBroken;
 				}
-				fout << it->ID << " " << N1.ID << " " << N2.ID << " " << ans << endl;
+				fout << it->ID_Created << " " << N1.ID_Created << " " << N2.ID_Created << " " << ans << endl;
 			}
 		}
 	}
 	cout << "All symptom saved to file \"symptom.all\"" << endl;
+}
+void BGraph::ComponentGet()//與f_comp相同 但是少了取得症狀的步驟
+{
+	Component.push_back(nullptr);//預留給孤立點的"元件"
+	Component.front().member.clear();
+	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
+	{
+		if (i->Component_ID == nullptr)
+		{
+			//Point_Symptom_Get(*i);
+			list<BPoint*> todolist = { &*i };
+			Component.push_back(&*i);
+			i->Component_ID = &Component.back();
+			Component.back().id = (++Component.rbegin())->id + 1;
+			while (todolist.size() > 0)
+			{
+				BPoint& head = *todolist.front();
+				todolist.pop_front();
+
+				for (int j = 2; j <= Level; j++)//檢查過去
+				{
+					if (head.Neighbor[j - 2].Guess == false)//好點
+					{
+						BPoint& JPoint = GetNeighbor(head, j);
+						if (JPoint.Component_ID != nullptr) continue;
+						//Point_Symptom_Get(JPoint);
+						if (JPoint.Neighbor[j - 2].Guess == false)
+						{
+							JPoint.Component_ID = head.Component_ID;
+							JPoint.Component_ID->member.push_back(&JPoint);
+							todolist.push_back(&JPoint);
+							LiarCheck(JPoint);
+						}
+					}
+				}
+			}
+			i->IsIsolated = true;
+			for (int j = 2; j <= Level; j++)
+			{
+				if (i->Neighbor[j - 2].Guess == false)
+				{
+					i->IsIsolated = false;
+					break;
+				}
+			}
+			if (Component.back().member.size() == 1 && i->IsIsolated)//清掉孤立元件 應該是這樣做
+			{
+				i->Component_ID = &Component.front();
+				i->Component_ID->member.push_back(&*i);
+				Component.pop_back();
+			}
+		}
+	}
 }
 BComponent::BComponent(BPoint *B)
 {

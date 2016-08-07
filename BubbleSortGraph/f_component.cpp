@@ -84,9 +84,9 @@ void BGraph::LiarCheck(BPoint& p)
 {
 	for (int i = 2; i <= Level; i++)
 	{
-		if (p.Neighbor[i - 2].Point->Component_ID == p.Component_ID)
+		if (GetNeighbor(p,i).Component_ID == p.Component_ID)
 		{
-			if (p.Neighbor[i - 2].Guess == true || p.Neighbor[i - 2].Point->Neighbor[i - 2].Guess == true)
+			if (p.Neighbor[i - 2].Guess == true || GetNeighbor(p, i).Neighbor[i - 2].Guess == true)
 			{
 				p.Component_ID->SetAsBad();
 				cout << "FOUND!!" << endl;

@@ -41,4 +41,9 @@
       <Filter>資源檔</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="symptom.all">
+      <Filter>資源檔</Filter>
+    </None>
+  </ItemGroup>
 </Project>
