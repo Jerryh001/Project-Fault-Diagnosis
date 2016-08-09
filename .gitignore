@@ -194,7 +194,7 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
-/SymptomGenerater/symptom.all
-/SymptomGenerater/broken.point
-/BubbleSortGraph/symptom.all
+
+*.point
+*.all
 *.txt

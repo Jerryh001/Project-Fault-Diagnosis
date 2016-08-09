@@ -106,6 +106,8 @@ public:
 	void f_comp();//連接元件
 	void FindGoodComp();//找好元件
 	void LiarCheck(BPoint&);
+	void FindBadComponent();
+	void WritePoint();
 	friend void output(const BGraph&);
 
 };

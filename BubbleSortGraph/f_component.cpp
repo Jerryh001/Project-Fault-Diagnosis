@@ -1,7 +1,7 @@
 ﻿#include "BGraph.h"
-#include "BGraph.h"
 #include<map>
-
+#include<fstream>
+#include<sstream>
 void BGraph::f_comp()
 {
 	Component.push_back(nullptr);//預留給孤立點的"元件"
@@ -20,14 +20,14 @@ void BGraph::f_comp()
 				BPoint& head = *todolist.front();
 				todolist.pop_front();
 
-				for (int j = 2; j <= Level;j++)//檢查過去
+				for (int j = 2; j <= Level; j++)//檢查過去
 				{
-					if (head.Neighbor[j-2].Guess == false)//好點
+					if (head.Neighbor[j - 2].Guess == false)//好點
 					{
-						BPoint& JPoint = GetNeighbor(head,j);
+						BPoint& JPoint = GetNeighbor(head, j);
 						if (JPoint.Component_ID != nullptr) continue;
 						Point_Symptom_Get(JPoint);
-						if (JPoint.Neighbor[j-2].Guess==false)
+						if (JPoint.Neighbor[j - 2].Guess == false)
 						{
 							JPoint.Component_ID = head.Component_ID;
 							JPoint.Component_ID->member.push_back(&JPoint);
@@ -38,9 +38,9 @@ void BGraph::f_comp()
 				}
 			}
 			i->IsIsolated = true;
-			for (int j = 2; j <= Level;j++)
+			for (int j = 2; j <= Level; j++)
 			{
-				if (i->Neighbor[j-2].Guess == false)
+				if (i->Neighbor[j - 2].Guess == false)
 				{
 					i->IsIsolated = false;
 					break;
@@ -70,11 +70,30 @@ void BGraph::FindGoodComp()
 				if (complist[id] > 0)
 				{
 					KPoint.Component_ID->SetAsBad();
-				}else
+				}
+				else
 				{
 					KPoint.Component_ID->Sur_Point.push_back(&B);//加入
 					complist[id]++;
 				}
+			}
+		}
+	}
+	for (list<BComponent>::iterator it = ++Component.begin(); it != Component.end(); it++)
+	{
+		if (it->member.size() > PossibleBadSize)
+		{
+			it->SetAsGood();
+		}
+		else if (it->member.size() + it->Sur_Point.size() > PossibleBadSize)
+		{
+			if (it->Is_Link())
+			{
+				it->SetAsBad();
+			}
+			else
+			{
+				it->SetAsGood();
 			}
 		}
 	}
@@ -84,7 +103,7 @@ void BGraph::LiarCheck(BPoint& p)
 {
 	for (int i = 2; i <= Level; i++)
 	{
-		if (GetNeighbor(p,i).Component_ID == p.Component_ID)
+		if (GetNeighbor(p, i).Component_ID == p.Component_ID)
 		{
 			if (p.Neighbor[i - 2].Guess == true || GetNeighbor(p, i).Neighbor[i - 2].Guess == true)
 			{
@@ -94,4 +113,62 @@ void BGraph::LiarCheck(BPoint& p)
 			}
 		}
 	}
+}
+
+void BGraph::FindBadComponent()
+{
+	for (list<BComponent>::iterator it = ++Component.begin(); it != Component.end(); it++)
+	{
+		if (it->GetStatus() == Good)
+		{
+			for (list<BPoint* > ::iterator p = it->member.begin(); p != it->member.end(); p++)
+			{
+				for (int i = 2; i <= Level; i++)
+				{
+					BPoint& N = GetNeighbor(**p, i);
+					if (N.Component_ID->GetStatus() != Good&&N.Component_ID != &*Component.begin() && N.Component_ID != (*p)->Component_ID)//不是其他好元件 不是孤立點 不是同元件
+					{
+						N.Component_ID->SetAsBad();
+					}
+				}
+			}
+		}
+	}
+}
+
+void BGraph::WritePoint()
+{
+	ofstream fout;
+	stringstream badstream;
+	stringstream goodstream;
+	int badcount = 0, goodcount = 0;
+	cout << "Bad Points:" << endl;
+	for (list<BComponent>::iterator it = ++Component.begin(); it != Component.end(); it++)
+	{
+		ComponentStatus S = it->GetStatus();
+		for (list<BPoint* > ::iterator p = it->member.begin(); p != it->member.end(); p++)
+		{
+			switch (S)
+			{
+			case Bad:
+				badcount++;
+				cout << (*p)->ID << endl;
+				badstream << (*p)->ID << endl;
+				break;
+			case Good:
+				goodcount++;
+				goodstream << (*p)->ID << endl;
+				break;
+			}
+
+		}
+	}
+	fout.open("bad.point");
+	fout << badcount << endl;
+	fout << badstream.str();
+	fout.close();
+	fout.open("good.point");
+	fout << goodcount << endl;
+	fout << goodstream.str();
+	fout.close();
 }

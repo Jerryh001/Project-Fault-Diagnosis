@@ -153,7 +153,7 @@ void BGraph::CalculateValue()
 	k = Level - 1;//單次最少找出K個點
 	T_UpperBound = Point.size() / (max_comps + 1);
 	T_LowerBound = (max_comps - 1)*(3 * Level - 10) + 2;
-	PossibleBadSize = T_UpperBound + 1;
+	PossibleBadSize = T_UpperBound;
 }
 void BGraph::CreateGraph()//產生點的呼叫
 {

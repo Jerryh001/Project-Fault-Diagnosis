@@ -80,7 +80,9 @@ int main()
 	Bubble.ComponentGet();
 	cout << "Component done." << endl;
 	Bubble.FindGoodComp();
-	output(Bubble);
+	Bubble.FindBadComponent();
+	Bubble.WritePoint();
+	//output(Bubble);
 	system("PAUSE");
 
 	return 0;
