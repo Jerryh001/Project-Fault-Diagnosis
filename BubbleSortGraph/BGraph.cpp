@@ -180,6 +180,7 @@ void BGraph::SetBroken(list<string> &P)//將壞點放入
 void BGraph::RandomSetBroken(int num)
 {
 	ofstream fout("broken.point");
+	fout << num << endl;
 	srand(time(NULL));
 	cout << "Bad points:" << endl;
 	while (num)

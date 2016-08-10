@@ -32,10 +32,11 @@
     <ClInclude Include="BGraph.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="output.txt" />
     <Text Include="whypointfile.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bad.point" />
+    <None Include="good.point" />
     <None Include="symptom.all" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
