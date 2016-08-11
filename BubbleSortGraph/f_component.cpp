@@ -4,8 +4,7 @@
 #include<sstream>
 void BGraph::f_comp()
 {
-	Component.push_back(nullptr);//預留給孤立點的"元件"
-	Component.front().member.clear();
+	//Component.front().member.clear();//貌似沒用
 	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
 	{
 		if (i->Component_ID == nullptr)

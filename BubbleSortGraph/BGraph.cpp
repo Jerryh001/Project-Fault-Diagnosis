@@ -145,6 +145,34 @@ BGraph::BGraph(const string& filename)
 	CalculateValue();
 	AllStatusSet(fin);
 }
+void BGraph::SetTrustPoint(const string& filename)
+{
+	ifstream fin(filename);
+	if (!fin.is_open())
+	{
+		cout << "\"" + filename + "\" is not exist or can\'t open" << endl;
+		return;
+	}
+	cout << "Detected \"" + filename + "\", Setting trust points......" << endl;
+	int count;
+	string s;
+	fin >> count;
+	if (count > 0)
+	{
+		Component.push_back(nullptr);
+		Component.back().member.pop_back();
+		Component.back().SetAsGood();
+	}
+	while (count--)
+	{
+		BComponent& BC = Component.back();
+		fin >> s;
+		BPoint& BP = GetPoint(s);
+		BC.member.push_back(&BP);
+		BP.Component_ID = &BC;
+	}
+	cout << "Setting done." << endl;
+}
 void BGraph::CalculateValue()
 {
 	int a = 3 * Level - 10;
@@ -157,6 +185,7 @@ void BGraph::CalculateValue()
 }
 void BGraph::CreateGraph()//產生點的呼叫
 {
+	Component.push_back(nullptr);//預留給孤立點的"元件"
 	Create(Level, "", Point, BS);
 }
 void Create(int n, string tail, list<BPoint> &BP, BStruct &BS)//遞迴產生點及結構

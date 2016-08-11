@@ -88,6 +88,7 @@ public:
 	BGraph();
 	BGraph(const int&);
 	BGraph(const string&);
+	void SetTrustPoint(const string&);
 	void CalculateValue();
 	void CreateGraph();//初始化
 	BPoint& GetPoint(const string&);//用ID取得點物件

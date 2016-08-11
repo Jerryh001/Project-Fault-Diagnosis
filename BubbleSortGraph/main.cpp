@@ -73,9 +73,11 @@ int main()
 	Bubble.f_comp();
 	Bubble.FindGoodComp();
 	output(Bubble);*/
-	cout << "Start reading symptom." << endl;
+	cout << "Start creating graph and reading symptom." << endl;
 	BGraph Bubble("symptom.all");
 	cout << "All symptom readed." << endl;
+	cout << "Detect \"good.point\" from previous round..." << endl;
+	Bubble.SetTrustPoint("good.point");
 	cout << "Finding Component." << endl;
 	Bubble.ComponentGet();
 	cout << "Component done." << endl;
