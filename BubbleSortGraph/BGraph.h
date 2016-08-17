@@ -97,7 +97,7 @@ public:
 	int GetNeighborLevel(const string&, const string&);
 	void SetNeighber(BPoint&,const int&);
 	void SetBroken(list<string>&);//設定壞點
-	void ReadSetBroken(int);
+	void ReadSetBroken();
 	void RandomSetBroken(int);//設定壞點
 	void Point_Symptom_Get(BPoint&);
 	void AllStatusSet(ifstream&);

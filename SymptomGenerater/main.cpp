@@ -15,22 +15,29 @@ int main()
 	cout << "Initializing a level " << level << " BubbleSort Graph, please wait." << endl;
 	BGraph bubble(level);
 	cout << "Initialized." << endl;
-	int broken=INT_MAX;
-	while (broken<0 || broken>bubble.T_LowerBound)
+	int broken;
+	while (1)
 	{
-		cout << "Set BubbleSort Graph Broken Point amount(at most "<< bubble.T_LowerBound<<" Points):";
+		cout << "If you want to set broken points manually from file \"broken.point\", input a negative number." << endl;
+		cout << "Otherwise, input a number to set BubbleSort Graph broken point randomly(at most "<< bubble.T_LowerBound<<" Points):";
 		cin >> broken;
 		if (broken<0)
 		{
-			cout << "Of course it can\'t smaller than ZERO, please try again!" << endl;
+			cout << "Setting Broken points from file, please wait." << endl;
+			bubble.ReadSetBroken();
+			break;
 		}
 		else if (broken > bubble.T_LowerBound)
 		{
 			cout << "Too large, please try again!" << endl;
 		}
+		else
+		{
+			cout << "Setting Broken points, please wait." << endl;
+			bubble.RandomSetBroken(broken);
+			break;
+		}
 	}
-	cout << "Setting Broken points, please wait." << endl;
-	bubble.RandomSetBroken(broken);
 	cout << "Starting Create Symptom......" << endl;
 	bubble.All_Symptom_GetAndWrite();
 	cout << "All Done!" << endl;

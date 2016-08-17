@@ -4,7 +4,6 @@
 #include<sstream>
 void BGraph::f_comp()
 {
-	//Component.front().member.clear();//貌似沒用
 	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
 	{
 		if (i->Component_ID == nullptr)
@@ -58,7 +57,7 @@ void BGraph::FindGoodComp()
 {
 	for (list<BPoint*>::iterator j = Component.front().member.begin(); j != Component.front().member.end(); j++)//每個孤立點
 	{
-		BPoint &B = *(*j);//孤立點本身
+		BPoint &B = **j;//孤立點本身
 		map<int, int> complist;
 		for (int k = 2; k <= Level; k++)
 		{
@@ -104,7 +103,7 @@ void BGraph::LiarCheck(BPoint& p)
 	{
 		if (GetNeighbor(p, i).Component_ID == p.Component_ID)
 		{
-			if (p.Neighbor[i - 2].Guess == true || GetNeighbor(p, i).Neighbor[i - 2].Guess == true)
+			if (p.Component_ID->GetStatus() != Good && (p.Neighbor[i - 2].Guess == true || GetNeighbor(p, i).Neighbor[i - 2].Guess == true))
 			{
 				p.Component_ID->SetAsBad();
 				cout << "FOUND!!" << endl;
@@ -120,14 +119,39 @@ void BGraph::FindBadComponent()
 	{
 		if (it->GetStatus() == Good)
 		{
-			for (list<BPoint* > ::iterator p = it->member.begin(); p != it->member.end(); p++)
+			for (list<BPoint* > ::iterator p = it->member.begin(); p != it->member.end(); p++)//元件
 			{
 				for (int i = 2; i <= Level; i++)
 				{
 					BPoint& N = GetNeighbor(**p, i);
-					if (N.Component_ID->GetStatus() != Good&&N.Component_ID != &*Component.begin() && N.Component_ID != (*p)->Component_ID)//不是其他好元件 不是孤立點 不是同元件
+					if ((*p)->Neighbor[i - 2].Guess == true&& N.Component_ID->GetStatus() != Good)//無指向
 					{
-						N.Component_ID->SetAsBad();
+						if (N.Component_ID == &Component.front())
+						{
+							N.IsBroken = true;
+						}
+						else
+						{
+							N.Component_ID->SetAsBad();
+						}
+					}
+				}
+			}
+			for (list<BPoint* > ::iterator p = it->Sur_Point.begin(); p != it->Sur_Point.end(); p++)//周圍孤立點
+			{
+				for (int i = 2; i <= Level; i++)
+				{
+					BPoint& N = GetNeighbor(**p, i);
+					if (N.Component_ID->GetStatus() != Good)
+					{
+						if (N.Component_ID == &Component.front())
+						{
+							N.IsBroken = true;
+						}
+						else
+						{
+							N.Component_ID->SetAsBad();
+						}
 					}
 				}
 			}
@@ -142,8 +166,21 @@ void BGraph::WritePoint()
 	stringstream goodstream;
 	int badcount = 0, goodcount = 0;
 	cout << "Bad Points:" << endl;
-	for (list<BComponent>::iterator it = ++Component.begin(); it != Component.end(); it++)
+	for (list<BComponent>::iterator it = Component.begin(); it != Component.end(); it++)
 	{
+		if (&*it == &Component.front())
+		{
+			for (list<BPoint* > ::iterator p = it->member.begin(); p != it->member.end(); p++)
+			{
+				if ((*p)->IsBroken == true)
+				{
+					badcount++;
+					cout << (*p)->ID << endl;
+					badstream << (*p)->ID << endl;
+				}
+			}
+			continue;
+		}
 		ComponentStatus S = it->GetStatus();
 		for (list<BPoint* > ::iterator p = it->member.begin(); p != it->member.end(); p++)
 		{
@@ -160,6 +197,14 @@ void BGraph::WritePoint()
 				break;
 			}
 
+		}
+		if (S == Good)
+		{
+			for (list<BPoint* > ::iterator p = it->Sur_Point.begin(); p != it->Sur_Point.end(); p++)
+			{
+				goodcount++;
+				goodstream << (*p)->ID << endl;
+			}
 		}
 	}
 	fout.open("bad.point");

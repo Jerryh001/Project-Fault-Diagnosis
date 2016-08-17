@@ -186,6 +186,7 @@ void BGraph::CalculateValue()
 void BGraph::CreateGraph()//產生點的呼叫
 {
 	Component.push_back(nullptr);//預留給孤立點的"元件"
+	Component.front().member.clear();
 	Create(Level, "", Point, BS);
 }
 void Create(int n, string tail, list<BPoint> &BP, BStruct &BS)//遞迴產生點及結構
@@ -231,16 +232,33 @@ void BGraph::RandomSetBroken(int num)
 	fout.close();
 	cout << "File \"broken.point\" saved." << endl;
 }
-void BGraph::ReadSetBroken(int num)
+void BGraph::ReadSetBroken()
 {
-	ifstream fin("whypointfile.txt");
-	string BrokenID;
-	cout << "bad point:";
-	while (fin >> BrokenID && num)
+	ifstream fin("broken.point");
+	if (!fin.is_open())
 	{
+		cout << "Can'\t open file \"broken.point\"" << endl;
+		return;
+	}
+	string BrokenID;
+	int num;
+	fin >> num;
+	if (num > T_LowerBound)
+	{
+		cout << "Too many points! Only the first " << T_LowerBound << " will be set" << endl;
+		num = T_LowerBound;
+	}
+	cout << "Bad points:" << endl;
+	for (;num>0;num--)
+	{
+		fin >> BrokenID;
+		if (BrokenID.length() != Level)
+		{
+			cout << BrokenID << " is not a level " << Level << " point ID." << endl;
+			continue;
+		}
 		GetPoint(BrokenID).IsBroken = true;
-		cout << BrokenID << " ";
-		num--;
+		cout << BrokenID << endl;
 	}
 }
 void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
@@ -334,7 +352,8 @@ void BGraph::All_Symptom_GetAndWrite()
 				BPoint& N2 = GetNeighbor(*it, b);
 				if (it->IsBroken)
 				{
-					ans = (rand() % 10 > 5) ? true : false;
+					//ans = (rand() % 10 > 5) ? true : false;
+					ans = true;//暫時的
 				}
 				else
 				{
@@ -348,17 +367,36 @@ void BGraph::All_Symptom_GetAndWrite()
 }
 void BGraph::ComponentGet()//與f_comp相同 但是少了取得症狀的步驟
 {
-	Component.push_back(nullptr);//預留給孤立點的"元件"
-	Component.front().member.clear();
+	if (Component.size() ==2)//有前一輪的好點
+	{
+		list<BPoint*> todolist = Component.back().member;
+		while (todolist.size() > 0)
+		{
+			BPoint& head = *todolist.front();
+			todolist.pop_front();
+
+			for (int j = 2; j <= Level; j++)//檢查過去
+			{
+				if (head.Neighbor[j - 2].Guess == false)//好點
+				{
+					BPoint& JPoint = GetNeighbor(head, j);
+					if (JPoint.Component_ID == nullptr&&JPoint.Neighbor[j - 2].Guess == false)
+					{
+						JPoint.Component_ID = head.Component_ID;
+						JPoint.Component_ID->member.push_back(&JPoint);
+						todolist.push_back(&JPoint);
+					}
+				}
+			}
+		}
+	}
 	for (list<BPoint>::iterator i = Point.begin(); i != Point.end(); i++)
 	{
 		if (i->Component_ID == nullptr)
 		{
-			//Point_Symptom_Get(*i);
 			list<BPoint*> todolist = { &*i };
 			Component.push_back(&*i);
 			i->Component_ID = &Component.back();
-			Component.back().id = (++Component.rbegin())->id + 1;
 			while (todolist.size() > 0)
 			{
 				BPoint& head = *todolist.front();
@@ -371,7 +409,7 @@ void BGraph::ComponentGet()//與f_comp相同 但是少了取得症狀的步驟
 						BPoint& JPoint = GetNeighbor(head, j);
 						if (JPoint.Component_ID != nullptr) continue;
 						//Point_Symptom_Get(JPoint);
-						if (JPoint.Neighbor[j - 2].Guess == false)
+						if (JPoint.Component_ID == nullptr&&JPoint.Neighbor[j - 2].Guess == false)
 						{
 							JPoint.Component_ID = head.Component_ID;
 							JPoint.Component_ID->member.push_back(&JPoint);
@@ -380,14 +418,14 @@ void BGraph::ComponentGet()//與f_comp相同 但是少了取得症狀的步驟
 						}
 					}
 				}
-			}
-			i->IsIsolated = true;
-			for (int j = 2; j <= Level; j++)
-			{
-				if (i->Neighbor[j - 2].Guess == false)
+				head.IsIsolated = true;
+				for (int j = 2; j <= Level; j++)
 				{
-					i->IsIsolated = false;
-					break;
+					if (head.Neighbor[j - 2].Guess == false)
+					{
+						head.IsIsolated = false;
+						break;
+					}
 				}
 			}
 			if (Component.back().member.size() == 1 && i->IsIsolated)//清掉孤立元件 應該是這樣做
