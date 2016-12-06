@@ -66,4 +66,5 @@ int main()
 		cout << "Replaced with new \"broken.point\"" << endl;
 		cout << "To start new round,send it to SymptomGenerator again" << endl;
 	}
+	system("PAUSE");
 }

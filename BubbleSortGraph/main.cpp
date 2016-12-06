@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<list>
+#include<cctype>
 using namespace std;
 #include "BGraph.h"
 void output(const BGraph& Bubble)//顯示結果
@@ -76,8 +77,13 @@ int main()
 	cout << "Start creating graph and reading symptom." << endl;
 	BGraph Bubble("symptom.all");
 	cout << "All symptom readed." << endl;
-	cout << "Detect \"good.point\" from previous round..." << endl;
-	Bubble.SetTrustPoint("good.point");
+	cout << "Do you want to use \"good.point\" from previous round?(y/N):" << endl;
+	char c;
+	cin.get(c);
+	if (tolower(c) == 'y')
+	{
+		Bubble.SetTrustPoint("good.point");
+	}
 	cout << "Finding Component." << endl;
 	Bubble.ComponentGet();
 	cout << "Component done." << endl;
