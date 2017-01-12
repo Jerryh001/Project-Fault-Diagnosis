@@ -26,7 +26,7 @@ struct Stauts//白箭頭與黑箭頭 黑=true
 	BPoint* Point;
 	bool Guess;
 };
-enum ComponentStatus { Undefined=-1, Good=0, Bad=1 };
+enum ComponentStatus { Undefined = -1, Good = 0, Bad = 1 };
 class BComponent
 {
 	ComponentStatus Status;
@@ -47,10 +47,10 @@ public:
 	BPoint(const string&);
 	void ConvertToID();
 	void Create_Neighbor();
-	
+
 	string ID_Created;
 	string ID;
-	BComponent* Component_ID=nullptr;
+	BComponent* Component_ID = nullptr;
 	bool IsBroken;
 	int Level;
 	bool IsIsolated;
@@ -83,7 +83,7 @@ public:
 	list<BPoint> Point;//點
 	BStruct BS;//階層狀結構
 	list<BComponent> Component;
-	
+
 	//元件
 	BGraph();
 	BGraph(const int&);
@@ -93,9 +93,9 @@ public:
 	void CreateGraph();//初始化
 	BPoint& GetPoint(const string&);//用ID取得點物件
 	BPoint& GetPointByCreateID(const string&);
-	BPoint& GetNeighbor(BPoint&,const int&);
+	BPoint& GetNeighbor(BPoint&, const int&);
 	int GetNeighborLevel(const string&, const string&);
-	void SetNeighber(BPoint&,const int&);
+	void SetNeighber(BPoint&, const int&);
 	void SetBroken(list<string>&);//設定壞點
 	void ReadSetBroken();
 	void RandomSetBroken(int);//設定壞點
@@ -109,17 +109,6 @@ public:
 	void LiarCheck(BPoint&);
 	void FindBadComponent();
 	void WritePoint();
-	friend void output(const BGraph&);
-
-};
-class Subgraph:public BGraph
-{
-public:
-	/*做local*/
-	int Unitlevel = 4;
-	//BPoint& GetPoint(string ID);
-	Subgraph(BStruct &, const int&);
-	void CopyGraphPoint(int , list<BPoint> &, BStruct &);//複製原圖點到子圖
 };
 void GetSubStruct(const BStruct& Bubble, vector<BStruct>& b);//複製原圖結構到子圖(複製結構)
 void prowhypoint(int, int, list<string> &);

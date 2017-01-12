@@ -124,7 +124,7 @@ void BGraph::FindBadComponent()
 				for (int i = 2; i <= Level; i++)
 				{
 					BPoint& N = GetNeighbor(**p, i);
-					if ((*p)->Neighbor[i - 2].Guess == true&& N.Component_ID->GetStatus() != Good)//無指向
+					if ((*p)->Neighbor[i - 2].Guess == true && N.Component_ID->GetStatus() != Good)//無指向
 					{
 						if (N.Component_ID == &Component.front())
 						{
