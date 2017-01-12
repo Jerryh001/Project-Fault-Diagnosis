@@ -35,7 +35,7 @@ int main()
 		count[s]--;
 	}
 	guessin.close();
-	
+
 	stringstream tempout;
 	num = 0;
 	for (map<string, int>::iterator it = count.begin(); it != count.end(); it++)
@@ -44,7 +44,7 @@ int main()
 		{
 			continue;
 		}
-		else if(it->second>0)
+		else if (it->second > 0)
 		{
 			tempout << it->first << endl;
 			num++;

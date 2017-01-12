@@ -22,7 +22,7 @@ void prowhypoint(int n, int c, list<string> &p)//n為階層數 C為產生的壞�
 			b *= 10;
 			b += a[i];
 		}
-		for (list<string>::iterator i = p.begin(); i!=p.end(); i++)
+		for (list<string>::iterator i = p.begin(); i != p.end(); i++)
 		{
 			if (to_string(b) == *i)
 			{

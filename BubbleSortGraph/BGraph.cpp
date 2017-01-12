@@ -33,8 +33,8 @@ BPoint& BGraph::GetNeighbor(BPoint& B, const int& l)//2<=l<=Level
 }
 int BGraph::GetNeighborLevel(const string& point_IDC, const string& nei_IDC)//未完全驗證
 {
-	int level = Level-1;
-	for (; level>=0&&point_IDC[level] == nei_IDC[level]; level--);
+	int level = Level - 1;
+	for (; level >= 0 && point_IDC[level] == nei_IDC[level]; level--);
 	return level + 1;
 
 }
@@ -175,12 +175,29 @@ void BGraph::SetTrustPoint(const string& filename)
 }
 void BGraph::CalculateValue()
 {
-	int a = 3 * Level - 10;
-	int c = 12 - 3 * Level - Point.size();
-	int max_comps = floor((sqrt(4 - 4 * a*c) - 2) / (2 * a));
+	int CN;
+	switch (Level)
+	{
+	case 4:
+		CN = 3;
+		break;
+	case 5:
+		CN = 6;
+		break;
+	case 6:
+		CN = 8;
+		break;
+	default:
+		CN = 10;
+		break;
+	}
+	int a = 3 * Level - 8 - CN;
+	int b = CN;
+	int c = 8 - 3 * Level + 2 * CN - static_cast<int>(Point.size());
+	int max_comps = static_cast<int>(ceil((sqrt(b * b - 4 * a * c) - b) / (2 * a) - 1));
 	k = Level - 1;//單次最少找出K個點
-	T_UpperBound = Point.size() / (max_comps + 1);
-	T_LowerBound = (max_comps - 1)*(3 * Level - 10) + 2;
+	T_UpperBound = static_cast<int>(ceil((Point.size() / (max_comps + 1)) - 1));
+	T_LowerBound = static_cast<int>(floor((max_comps - 1) * (3 * Level - 8) - (max_comps - 2) * CN));
 	PossibleBadSize = T_UpperBound;
 }
 void BGraph::CreateGraph()//產生點的呼叫
@@ -211,7 +228,7 @@ void BGraph::RandomSetBroken(int num)
 {
 	ofstream fout("broken.point");
 	fout << num << endl;
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(nullptr)));
 	cout << "Bad points:" << endl;
 	while (num)
 	{
@@ -249,7 +266,7 @@ void BGraph::ReadSetBroken()
 		num = T_LowerBound;
 	}
 	cout << "Bad points:" << endl;
-	for (;num>0;num--)
+	for (; num > 0; num--)
 	{
 		fin >> BrokenID;
 		if (BrokenID.length() != Level)
@@ -316,7 +333,7 @@ void BGraph::Point_Symptom_Get(BPoint& p)//取得單一點完整症狀
 }
 void BGraph::AllStatusSet(ifstream& fin)
 {
-	BPoint* BP=nullptr;
+	BPoint* BP = nullptr;
 	string point, N1, N2;
 	int guess;
 	map<string, bool> temp;
@@ -331,7 +348,7 @@ void BGraph::AllStatusSet(ifstream& fin)
 			{
 				BP = &GetPointByCreateID(point);
 			}
-			BP->Neighbor[GetNeighborLevel(point, N1)-2].Guess= BP->Neighbor[GetNeighborLevel(point, N2) - 2].Guess=false;
+			BP->Neighbor[GetNeighborLevel(point, N1) - 2].Guess = BP->Neighbor[GetNeighborLevel(point, N2) - 2].Guess = false;
 		}
 	}
 
@@ -340,7 +357,7 @@ void BGraph::All_Symptom_GetAndWrite()
 {
 	ofstream fout("symptom.all");
 	fout << Level << endl;
-	srand(time(nullptr));
+	srand(static_cast<unsigned int>(time(nullptr)));
 	bool ans = false;
 	for (list<BPoint>::iterator it = Point.begin(); it != Point.end(); it++)
 	{
@@ -367,7 +384,7 @@ void BGraph::All_Symptom_GetAndWrite()
 }
 void BGraph::ComponentGet()//與f_comp相同 但是少了取得症狀的步驟
 {
-	if (Component.size() ==2)//有前一輪的好點
+	if (Component.size() == 2)//有前一輪的好點
 	{
 		list<BPoint*> todolist = Component.back().member;
 		while (todolist.size() > 0)
@@ -486,38 +503,5 @@ void GetSubStruct(const BStruct& Bubble, vector<BStruct>& b)
 	else if (Bubble.level == Unitlevel)
 	{
 		b.push_back(Bubble);
-	}
-}
-
-Subgraph::Subgraph(BStruct &S, const int& l)
-{
-	/*t,k有待修正*/
-	Level = Unitlevel;
-	k = l - 1;//單次最少找出K個點
-	T_LowerBound = T_UpperBound = round(pow(2, l - 2))*(l - 3) / (l - 1);
-	BS = S;
-	CopyGraphPoint(S.level, Point, BS);
-}
-
-void Subgraph::CopyGraphPoint(int n, list<BPoint> &BP, BStruct &BS)//因為Subgraph無法直接繼承BGraph的點 所以再建一個list<BPoint> 把點複製過來
-{
-	for (int i = 1; i <= n; i++)
-	{
-		CopyGraphPoint(n - 1, BP, BS.next.at(i - 1));
-	}
-	if (n == 0) {
-		BP.push_back(*BS.point);
-		BS.point = &BP.back();
-		string club_ID = string(BP.back().ID, Unitlevel);
-		for (vector<Stauts>::iterator i = BP.back().Neighbor.begin(); i != BP.back().Neighbor.end();)
-		{
-			string My_club = string(i->Point->ID, Unitlevel);
-			if (My_club != club_ID)
-			{
-				i = BP.back().Neighbor.erase(i);//接住下一個的位子 不要讓iterator跑掉
-			}
-			else
-				i++;
-		}
 	}
 }

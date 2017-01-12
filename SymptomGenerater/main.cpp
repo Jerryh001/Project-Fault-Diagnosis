@@ -2,7 +2,7 @@
 #include"BGraph.h"
 int main()
 {
-	int level=0;
+	int level = 0;
 	while (level < 4)
 	{
 		cout << "Set BubbleSort Graph Level(at least 4):";
@@ -19,9 +19,9 @@ int main()
 	while (1)
 	{
 		cout << "If you want to set broken points manually from file \"broken.point\", input a negative number." << endl;
-		cout << "Otherwise, input a number to set BubbleSort Graph broken point randomly(at most "<< bubble.T_LowerBound<<" Points):";
+		cout << "Otherwise, input a number to set BubbleSort Graph broken point randomly(at most " << bubble.T_LowerBound << " Points):";
 		cin >> broken;
-		if (broken<0)
+		if (broken < 0)
 		{
 			cout << "Setting Broken points from file, please wait." << endl;
 			bubble.ReadSetBroken();
